@@ -43,38 +43,7 @@ public:
 	friend class MutablePriorityQueue<Vertex<T>>;
 };
 
-
-template <class T>
-Vertex<T>::Vertex(T in): info(in) {}
-
-/*
- * Auxiliary function to add an outgoing edge to a vertex (this),
- * with a given destination vertex (d) and edge weight (w).
- */
-template <class T>
-void Vertex<T>::addEdge(Vertex<T> *d, double w) {
-	adj.push_back(Edge<T>(d, w));
-}
-
-template <class T>
-bool Vertex<T>::operator<(Vertex<T> & vertex) const {
-	return this->dist < vertex.dist;
-}
-
-template <class T>
-T Vertex<T>::getInfo() const {
-	return this->info;
-}
-
-template <class T>
-double Vertex<T>::getDist() const {
-	return this->dist;
-}
-
-template <class T>
-Vertex<T> *Vertex<T>::getPath() const {
-	return this->path;
-}
+#include "Vertex.tpp"
 
 /********************** Edge  ****************************/
 template <class T>
@@ -88,11 +57,8 @@ public:
     friend class Graph<T>;
     friend class Vertex<T>;
 };
-template <class T>
-Edge<T>::Edge(Vertex<T> *d, Vertex<T>* s, double w): dest(d), weight(w) , src(s){}
-template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w) {}
 
+#include "Edge.tpp"
 
 /*************************** Graph  **************************/
 
@@ -107,123 +73,19 @@ public:
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
 
-	// Fp05 - single source
+
 	void dijkstraShortestPath(const T &s);
-	void dijkstraShortestPathOld(const T &s);
-	void unweightedShortestPath(const T &s);
-	void bellmanFordShortestPath(const T &s);
+	//void dijkstraShortestPathOld(const T &s);
 	vector<T> getPath(const T &origin, const T &dest) const;
 
-	// Fp05 - all pairs
-	void floydWarshallShortestPath();
-	vector<T> getfloydWarshallPath(const T &origin, const T &dest) const;
+
 
 };
 
-template <class T>
-int Graph<T>::getNumVertex() const {
-	return vertexSet.size();
-}
-
-template <class T>
-vector<Vertex<T> *> Graph<T>::getVertexSet() const {
-	return vertexSet;
-}
-
-/*
- * Auxiliary function to find a vertex with a given content.
- */
-template <class T>
-Vertex<T> * Graph<T>::findVertex(const T &in) const {
-	for (auto v : vertexSet)
-		if (v->info == in)
-			return v;
-	return NULL;
-}
-
-/*
- *  Adds a vertex with a given content or info (in) to a graph (this).
- *  Returns true if successful, and false if a vertex with that content already exists.
- */
-template <class T>
-bool Graph<T>::addVertex(const T &in) {
-	if ( findVertex(in) != NULL)
-		return false;
-	vertexSet.push_back(new Vertex<T>(in));
-	return true;
-}
-
-/*
- * Adds an edge to a graph (this), given the contents of the source and
- * destination vertices and the edge weight (w).
- * Returns true if successful, and false if the source or destination vertex does not exist.
- */
-template <class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
-	auto v1 = findVertex(sourc);
-	auto v2 = findVertex(dest);
-	if (v1 == NULL || v2 == NULL)
-		return false;
-	v1->addEdge(v2,w);
-	return true;
-}
-
+#include "Graph.tpp"
+#include "Dijkstra.tpp"
 
 /**************** Single Source Shortest Path algorithms ************/
-
-template<class T>
-void Graph<T>::dijkstraShortestPath(const T &origin) {
-    for(auto v: vertexSet)
-    {
-        v->dist = INF;
-        v->path = NULL;
-    }
-
-    Vertex<T> *s = findVertex(origin);
-    s->dist = 0;
-    s->path = NULL;
-
-    MutablePriorityQueue<Vertex<T>> q;
-
-    q.insert(s);
-
-    while(!q.empty())
-    {
-        Vertex<T> *v = q.extractMin();
-        for(auto w: v->adj)
-        {
-            double oldDist = w.dest->getDist();
-            if(w.dest->getDist() > v->getDist() + w.weight) {
-                w.dest->dist = v->getDist() + w.weight;
-                w.dest->path = v;
-                if (oldDist == INF)
-                    q.insert(w.dest);
-                else
-                    q.decreaseKey(w.dest);
-            }
-        }
-    }
-
-
-
-}
-
-template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
-	vector<T> res;
-	Vertex<T> *d = findVertex(dest);
-	while(d->path != NULL) {
-	    res.push_back(d->getInfo());
-	    d = d->path;
-	}
-	res.push_back(origin);
-	reverse(res.begin(),res.end());
-	return res;
-}
-
-
-
-
 
 
 
