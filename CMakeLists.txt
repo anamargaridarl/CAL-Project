@@ -4,6 +4,6 @@ project(Project)
 set(CMAKE_CXX_STANDARD 11)
 
 add_executable(Project src/main.cpp
-        Project src/Graph.h
-        Project src/MutablePriorityQueue.h
+         src/Graph.h
+        src/MutablePriorityQueue.h
        )
