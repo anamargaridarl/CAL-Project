@@ -221,84 +221,10 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
 	return res;
 }
 
-template<class T>
-void Graph<T>::unweightedShortestPath(const T &orig) {
-
-    for (auto v: vertexSet) {
-        v->dist = INF;
-        v->path = NULL;
-    }
-
-    Vertex<T> *s = findVertex(orig);
-    s->dist = 0;
-    s->path = NULL;
-
-    queue<Vertex<T>*> q;
-
-    q.push(s);
-
-    while (!q.empty()) {
-        Vertex<T> *v = q.front();
-        q.pop();
-        for (auto w: v->adj) {
-            if ( w.dest->getDist() == INF) {
-                w.dest->dist = v->getDist() + w.weight;
-                w.dest->path = v;
-                q.push(w.dest);
-            }
-        }
-    }
-}
 
 
-template<class T>
-void Graph<T>::bellmanFordShortestPath(const T &orig) {
-    vector<Edge<T>> edgeSet;
-    for(Vertex<T> * v: this->vertexSet){
-        v->dist = INF;
-        v->path = NULL;
-        for(Edge<T> t: v->adj)
-            edgeSet.push_back(t);
-    }
-    Vertex<T> * v = this->findVertex(orig);
-    v->dist = 0;
-    for(int i = 1; i < this->vertexSet.size(); i++){
-        for(Edge<T> t: edgeSet){
-            if(t.dest->getDist() > t.src->getDist() + t.weight){
-                t.dest->dist = t.src->getDist() + t.weight;
-                t.dest->path = t.src;
-            }
-        }
-    }
 
 
-}
-
-
-/**************** All Pairs Shortest Path  ***************/
-
-template<class T>
-void Graph<T>::floydWarshallShortestPath() {
-    int dist[this->vertexSet.size()][this->vertexSet.size()];
-    for (int i = 0; i < this->vertexSet.size(); i++)
-        for (int j = 0; j < this->vertexSet.size(); j++)
-            dist[i][j] = 0;
-    for(int k = 0; k < this->vertexSet.size(); k++){
-        for(int i = 0; i < this->vertexSet.size(); i++){
-            for(int j = 0; j < this->vertexSet.size(); j++){
-                if(dist[i][k] + dist[k][j] < dist[i][j])
-                    dist[i][j] = dist[i][k] + dist[k][j];
-            }
-        }
-    }
-}
-
-template<class T>
-vector<T> Graph<T>::getfloydWarshallPath(const T &orig, const T &dest) const{
-	vector<T> res;
-	// TODO
-	return res;
-}
 
 
 #endif /* GRAPH_H_ */
