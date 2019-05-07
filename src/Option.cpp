@@ -5,3 +5,7 @@
 #include "Option.h"
 
 Option::Option(const std::string &optionName) : optionName(optionName) {}
+
+const std::string &Option::getOptionName() const {
+    return optionName;
+}

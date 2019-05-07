@@ -11,9 +11,10 @@ class Option {
 public:
     Option(const std::string &optionName);
 
+    const std::string &getOptionName() const;
+
 private:
     std::string optionName;
-    
 };
 
 
