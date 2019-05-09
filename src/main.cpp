@@ -67,5 +67,9 @@ void mainMenu()
 
 int main() {
     mainMenu();
+
+    Vertex<int> A(12);
+    cout << A.getPath() << endl;
+    cout <<  A.getInfo() << endl;
     return 0;
 }
