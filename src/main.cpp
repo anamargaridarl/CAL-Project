@@ -2,36 +2,70 @@
 #include "Graph.h"
 #include "MutablePriorityQueue.h"
 #include "Option.h"
+#include "Vehicle.h"
+#include "Menu.h"
 
 using namespace std;
 
-void DisplayOptions(vector<Option> options)
+vector<Vehicle*> vehicles;
+
+void loadMapMenu()
 {
-    for(unsigned int i = 0; i < options.size(); i++)
+    cout << "----!WIP!----" << endl << endl;
+}
+
+void vehicleCreation()
+{
+    unsigned int capacity;
+    cout << "----Vehicle Creation----" << endl;
+
+    cout << "Insert Vehicle Capacity: ";
+    while(!cin >> capacity)
     {
-        Option option = options.at(i);
-        cout << i << ": " << option.getOptionName() << endl;
+        cout << "Invalid Capacity!" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Insert Vehicle Capacity: ";
     }
+    cout << endl;
+
+    Vehicle* v = new Vehicle(capacity, Love);
+
+    vehicles.push_back(v);
 }
 
-void LoadMapMenu()
+void listAllVehicles()
 {
 
 }
 
-void MainMenu()
+void vehiclesMenu()
 {
-    cout << "----Main Menu----" << endl;
     vector<Option> options;
-    options.push_back(Option("Load Map"));
-    options.push_back(Option("Vehicles"));
-    options.push_back(Option("Create Journey"));
-    options.push_back(Option("Quit"));
+    options.push_back(Option("List all Vehicles", listAllVehicles));
+    options.push_back(Option("Create New Vehicle", vehicleCreation));
+    Menu vehiclesMenu("Vehicles Menu", options);
 
-    DisplayOptions(options);
+    vehiclesMenu.run();
+}
+
+void createJourneyMenu()
+{
+    cout << "----!WIP!----" << endl << endl;
+}
+
+void mainMenu()
+{
+    vector<Option> options;
+    options.push_back(Option("Load Map", loadMapMenu));
+    options.push_back(Option("Vehicles", vehiclesMenu));
+    options.push_back(Option("Create Journey", createJourneyMenu));
+    Menu mainMenu("Main Menu", options);
+
+    mainMenu.run();
 }
 
 int main() {
-    MainMenu();
+    mainMenu();
     return 0;
 }

@@ -3,18 +3,23 @@
 //
 #include <iostream>
 #include <string>
+#include <functional>
+
 
 #ifndef PROJECT_OPTION_H
 #define PROJECT_OPTION_H
 
 class Option {
 public:
-    Option(const std::string &optionName);
+    Option(const std::string &optionName, std::function<void()> optionFunc);
 
     const std::string &getOptionName() const;
 
+    void clickFunc() const;
+
 private:
     std::string optionName;
+    std::function<void()> optionFunc;
 };
 
 
