@@ -19,6 +19,20 @@ template <class T> class Vertex;
 
 #define INF std::numeric_limits<double>::max()
 
+typedef struct nodeInfo {
+    int nodeID;
+    float lat;
+    float lon;
+    string tag;
+
+    inline bool operator==(nodeInfo info) {
+        if (info.nodeID==nodeID)
+            return true;
+        else
+            return false;
+    }
+};
+
 /************************* Vertex  **************************/
 
 template <class T>

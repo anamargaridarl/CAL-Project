@@ -4,6 +4,7 @@
 #include "Option.h"
 #include "Vehicle.h"
 #include "Menu.h"
+#include "GraphImporter.h"
 
 using namespace std;
 
@@ -11,6 +12,8 @@ vector<Vehicle*> vehicles;
 
 void loadMapMenu()
 {
+    Graph<nodeInfo> graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
+    cout << graph.getNumVertex() << endl;
     cout << "----!WIP!----" << endl << endl;
 }
 
