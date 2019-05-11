@@ -17,7 +17,8 @@ void Menu::displayOptions()
         Option option = menuOptions.at(i);
         cout << "|" << i << ": " << option.getOptionName() << endl;
     }
-    cout << "|--------------------" << endl;
+    string s(menuName.length() + 8, '-');
+    cout << "|" + s << endl;
 }
 
 void Menu::navigateOptions()
