@@ -71,6 +71,7 @@ public:
     Edge(Vertex<T> *d, Vertex<T>* s, double w);
     friend class Graph<T>;
     friend class Vertex<T>;
+    Vertex<T>* getDest();
 };
 
 #include "Edge.tpp"

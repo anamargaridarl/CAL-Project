@@ -1,3 +1,4 @@
+#include <algorithm>
 
 template<class T>
 void Graph<T>::dijkstraShortestPath(const T &origin) {

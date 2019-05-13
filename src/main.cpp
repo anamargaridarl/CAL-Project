@@ -5,14 +5,16 @@
 #include "Vehicle.h"
 #include "Menu.h"
 #include "GraphImporter.h"
+#include "GraphViewer/graphviewer.h"
 
 using namespace std;
 
 vector<Vehicle*> vehicles;
+Graph<nodeInfo> graph;
 
 void loadMapMenu()
 {
-    Graph<nodeInfo> graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
+    graph = importGraph("../GraphFiles/Porto/T08_nodes_X_Y_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
 }
 
 void vehicleCreation()
@@ -94,12 +96,62 @@ void createJourneyMenu()
     cout << "----!WIP!----" << endl << endl;
 }
 
+void displayMap()
+{
+    GraphViewer *gv = new GraphViewer(600, 600, false);
+
+    gv->createWindow(600, 600);
+    gv->defineVertexColor("blue");
+    gv->defineEdgeColor("black");
+
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
+    }
+
+    gv->addNode(0, 0, 0);
+
+    int i = 0;
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        for (Edge<nodeInfo> e : v->getEdges()) {
+            bool bidirect = false;
+            for(Edge<nodeInfo> e2 : e.getDest()->getEdges()) {
+                if(e2.getDest() == v) {
+                    bidirect = true;
+                    break;
+                }
+            }
+            if(bidirect)
+                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::UNDIRECTED);
+            else
+                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
+            cout << i << endl;
+        }
+    }
+
+    //TEMPORARIO
+    nodeInfo start;
+    start.nodeID = 90379619;
+    graph.dijkstraShortestPath(start);
+    nodeInfo end;
+    end.nodeID = 1108123577;
+    vector<nodeInfo> path = graph.getPath(start,end);
+    gv->setVertexColor(start.nodeID, "red");
+    gv->setVertexColor(end.nodeID, "green");
+    for (int i = 1; i < path.size() - 1; i++) {
+        gv->setVertexColor(path[i].nodeID, "yellow");
+    }
+    //TEMPORARIO END
+
+    gv->rearrange();
+}
+
 void mainMenu()
 {
     vector<Option> options;
     options.push_back(Option("Load Map", loadMapMenu));
     options.push_back(Option("Vehicles", vehiclesMenu));
     options.push_back(Option("Create Journey", createJourneyMenu));
+    options.push_back(Option("Display Map", displayMap));
     Menu mainMenu("Main Menu", options);
 
     mainMenu.run();
