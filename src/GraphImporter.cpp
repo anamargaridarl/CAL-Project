@@ -30,7 +30,7 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
     catch (invalid_argument)
     {
         cout << "O Henrique fez merda!" << endl;
-        exit(1);
+        return;
     }
 
     for (unsigned int i = 0; i < numNodes; i++) {
@@ -53,7 +53,15 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
 void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile) {
     string line;
     getline(edgesFile, line);
-    int numEdges = stoi(line);
+    int numEdges;
+    try{
+        numEdges = stoi(line);
+    }
+    catch (invalid_argument)
+    {
+        cout << "O Henrique fez merda OUTRA VEZ!" << endl;
+        return;
+    }
 
     for (unsigned int i = 0; i < numEdges; i++) {
         int originNodeID, destNodeID;
