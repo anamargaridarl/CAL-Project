@@ -51,6 +51,7 @@ public:
 	Vertex(T in);
 	bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
 	T getInfo() const;
+	vector<Edge<T>> getEdges();
 	double getDist() const;
 	Vertex *getPath() const;
 	friend class Graph<T>;

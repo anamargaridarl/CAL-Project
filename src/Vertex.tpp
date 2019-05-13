@@ -6,6 +6,12 @@ Vertex<T>::Vertex(T in): info(in) {}
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
  */
+
+template <class T>
+vector<Edge<T>> Vertex<T>::getEdges() {
+    return adj;
+}
+
 template <class T>
 void Vertex<T>::addEdge(Vertex<T> *d, double w) {
     adj.push_back(Edge<T>(d, w));

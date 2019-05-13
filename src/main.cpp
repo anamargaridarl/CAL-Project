@@ -13,8 +13,6 @@ vector<Vehicle*> vehicles;
 void loadMapMenu()
 {
     Graph<nodeInfo> graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
-    cout << graph.getNumVertex() << endl;
-    cout << "----!WIP!----" << endl << endl;
 }
 
 void vehicleCreation()
@@ -109,9 +107,5 @@ void mainMenu()
 
 int main() {
     mainMenu();
-
-    Vertex<int> A(12);
-    cout << A.getPath() << endl;
-    cout <<  A.getInfo() << endl;
     return 0;
 }

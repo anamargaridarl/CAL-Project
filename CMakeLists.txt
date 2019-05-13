@@ -8,5 +8,5 @@ add_executable(Project src/main.cpp
         src/MutablePriorityQueue.h
         src/Option.cpp
         src/Option.h
-        src/Vehicle.cpp src/Vehicle.h src/Menu.cpp src/Menu.h src/GraphImporter.cpp src/GraphImporter.h)
+        src/Vehicle.cpp src/Vehicle.h src/Menu.cpp src/Menu.h src/GraphImporter.cpp src/GraphImporter.h src/ClarkeWright.tpp)
 
