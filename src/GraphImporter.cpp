@@ -23,7 +23,15 @@ Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string t
 void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
     string line;
     getline(nodesFile, line);
-    int numNodes = stoi(line);
+    int numNodes;
+    try{
+        numNodes = stoi(line);
+    }
+    catch (invalid_argument)
+    {
+        cout << "O Henrique fez merda!" << endl;
+        exit(1);
+    }
 
     for (unsigned int i = 0; i < numNodes; i++) {
         int nodeID;

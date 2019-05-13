@@ -25,6 +25,15 @@ typedef struct nodeInfo {
     float lon;
     string tag;
 
+    nodeInfo(int ID) : nodeID(ID)
+    {
+        lat = 0;
+        lon = 0;
+        tag = "";
+    }
+
+    nodeInfo(){}
+
     inline bool operator==(nodeInfo info) {
         if (info.nodeID==nodeID)
             return true;

@@ -9,10 +9,11 @@
 using namespace std;
 
 vector<Vehicle*> vehicles;
+Graph<nodeInfo> graph;
 
 void loadMapMenu()
 {
-    Graph<nodeInfo> graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
+    graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
 }
 
 void vehicleCreation()
@@ -91,7 +92,28 @@ void vehiclesMenu()
 
 void createJourneyMenu()
 {
-    cout << "----!WIP!----" << endl << endl;
+    int startPointID = 0;
+    int finalPointID = 0;
+
+    Vertex<nodeInfo>* startVertex;
+    Vertex<nodeInfo>* endVertex;
+    cout << "Insert ID of the start point for all Vehicles: " << flush;
+    while(!(cin >> startPointID) || (startVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
+    {
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.clear();
+        cout << "ERROR: Invalid Location!" << endl;
+        cout << "Insert the start point for all Vehicles: " << flush;
+    }
+
+    cout << "TEMPORARY: Insert ID of the destination: " << flush;
+    while(!(cin >> finalPointID) || (endVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
+    {
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.clear();
+        cout << "ERROR: Invalid Location!" << endl;
+        cout << "Insert ID of the destination: " << flush;
+    }
 }
 
 void mainMenu()
