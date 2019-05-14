@@ -11,20 +11,20 @@
 
 using namespace std;
 
+GraphViewer *gv = new GraphViewer(600, 600, false);
 vector<Vehicle*> vehicles;
 Graph<nodeInfo> graph;
 //TEMPORARY TO TEST DIJKSTRA
 Vertex<nodeInfo>* startVertex;
 Vertex<nodeInfo>* endVertex;
 
-void loadChosenMap(string name)
-{
-    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
-}
-
 void displayMap()
 {
-    GraphViewer *gv = new GraphViewer(600, 600, false);
+    if(graph.getVertexSet().empty())
+    {
+        cout << "There's no map Loaded!" << endl;
+        return;
+    }
 
     gv->createWindow(600, 600);
     gv->defineVertexColor("blue");
@@ -52,21 +52,22 @@ void displayMap()
                 gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
         }
     }
+    gv->rearrange();
+}
 
-    //TEMPORARIO
-    nodeInfo start;
-    start.nodeID = 90379619;
-    nodeInfo end;
-    end.nodeID = 1108123577;
-    graph.dijkstraShortestPath(start, end);
-    vector<nodeInfo> path = graph.getPath(start,end);
-    gv->setVertexColor(start.nodeID, "red");
-    gv->setVertexColor(end.nodeID, "green");
+void displayPath(nodeInfo start, nodeInfo end, vector<nodeInfo> path)
+{
+    gv->setVertexColor(start.nodeID, "green");
+    gv->setVertexColor(end.nodeID, "red");
     for (int i = 1; i < path.size() - 1; i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
     }
     gv->rearrange();
-    //TEMPORARIO END
+}
+
+void loadChosenMap(string name)
+{
+    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
 }
 
 void loadMapMenu()
@@ -85,12 +86,9 @@ void loadMapMenu()
         perror ("GraphFiles Directory not found!");
         return;
     }
-
     options.push_back(new Option("View Loaded Map", displayMap));
-
     Menu loadMapMenu("Choose Map to Load", options);
 
-    //Criar função que aceite um argumento do tipo string
     loadMapMenu.run();
 }
 
@@ -197,10 +195,13 @@ void createJourneyMenu()
     }
 
     //Show the 2 points on the Map
+    cout << "START ID: " << startVertex->getInfo().nodeID << "   END ID: " << endVertex->getInfo().nodeID << endl;
 
-    graph.getPath(startVertex->getInfo(), endVertex->getInfo());
+    graph.dijkstraShortestPath(startVertex->getInfo(), endVertex->getInfo());
 
-    //Show trajectory on the Map
+    vector<nodeInfo> path = graph.getPath(startVertex->getInfo(), endVertex->getInfo());
+
+    displayPath(startVertex->getInfo(), endVertex->getInfo(), path);
 
     /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
     while(true)
