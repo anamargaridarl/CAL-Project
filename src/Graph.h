@@ -101,15 +101,16 @@ public:
 
 	void dijkstraShortestPath(const T &s, const T &e);
     void aStarShortestPath(const T &s, const T &e);
+    vector<vector<T>> clarkeWright(vector<T> points);
+
 	vector<T> getPath(const T &origin, const T &dest) const;
-
-
-
+    int getCost(const T &dest) const;
 };
 
 #include "Graph.tpp"
 #include "Dijkstra.tpp"
 #include "A-star.tpp"
+#include "ClarkeWright.tpp"
 
 /**************** Single Source Shortest Path algorithms ************/
 

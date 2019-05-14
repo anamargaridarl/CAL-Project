@@ -88,6 +88,19 @@ void loadMapMenu()
     Menu loadMapMenu("Choose Map to Load", options);
 
     loadMapMenu.run();
+
+    //TEMP
+    vector<nodeInfo> nodes;
+
+    nodeInfo n1(90379619);
+    nodeInfo n2(90379359);
+    nodeInfo n3(122586155);
+
+    nodes.push_back(n1);
+    nodes.push_back(n2);
+    nodes.push_back(n3);
+
+    graph.clarkeWright(nodes);
 }
 
 void vehicleCreation()

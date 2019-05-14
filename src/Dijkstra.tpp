@@ -52,4 +52,10 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
     return res;
 }
 
+template<class T>
+int Graph<T>::getCost(const T &dest) const{
+    Vertex<T> *destV = findVertex(dest);
+    return destV->getDist();
+}
+
 #endif
