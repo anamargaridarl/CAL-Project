@@ -10,6 +10,9 @@ using namespace std;
 
 vector<Vehicle*> vehicles;
 Graph<nodeInfo> graph;
+//TEMPORARY TO TEST DIJKSTRA
+Vertex<nodeInfo>* startVertex;
+Vertex<nodeInfo>* endVertex;
 
 void loadMapMenu()
 {
@@ -92,28 +95,35 @@ void vehiclesMenu()
 
 void createJourneyMenu()
 {
-    int startPointID = 0;
-    int finalPointID = 0;
+    if(graph.getVertexSet().empty())
+    {
+        cout << "There is no map currently loaded!\n    Please Load a Map!\n" << endl;
+        return;
+    }
+    int startPointID = -1;
+    int finalPointID = -1;
 
     Vertex<nodeInfo>* startVertex;
     Vertex<nodeInfo>* endVertex;
     cout << "Insert ID of the start point for all Vehicles: " << flush;
     while(!(cin >> startPointID) || (startVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
     {
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.clear();
         cout << "ERROR: Invalid Location!" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Insert the start point for all Vehicles: " << flush;
     }
 
     cout << "TEMPORARY: Insert ID of the destination: " << flush;
     while(!(cin >> finalPointID) || (endVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
     {
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.clear();
         cout << "ERROR: Invalid Location!" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Insert ID of the destination: " << flush;
     }
+
+
 }
 
 void mainMenu()
