@@ -57,11 +57,11 @@ void displayMap()
 
 void displayPath(nodeInfo start, nodeInfo end, vector<nodeInfo> path)
 {
-    gv->setVertexColor(start.nodeID, "green");
-    gv->setVertexColor(end.nodeID, "red");
     for (int i = 1; i < path.size() - 1; i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
     }
+    gv->setVertexColor(start.nodeID, "green");
+    gv->setVertexColor(end.nodeID, "red");
     gv->rearrange();
 }
 
@@ -186,7 +186,7 @@ void createJourneyMenu()
     }
 
     cout << "TEMPORARY: Insert ID of the destination: " << flush;
-    while(!(cin >> finalPointID) || (endVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
+    while(!(cin >> finalPointID) || (endVertex = graph.findVertex(nodeInfo(finalPointID))) == NULL)
     {
         cout << "ERROR: Invalid Location!" << endl;
         cin.clear();
