@@ -47,6 +47,10 @@ void Menu::navigateOptions()
     if(optionNumber == menuOptions.size() - 1)
     {
         running = false;
+        for(Option* option: menuOptions)
+        {
+            delete option;
+        }
         return;
     }
     menuOptions.at(optionNumber)->clickFunc();
