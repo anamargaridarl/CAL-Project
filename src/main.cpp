@@ -131,18 +131,17 @@ void displayMap()
     //TEMPORARIO
     nodeInfo start;
     start.nodeID = 90379619;
-    graph.dijkstraShortestPath(start);
     nodeInfo end;
     end.nodeID = 1108123577;
+    graph.dijkstraShortestPath(start, end);
     vector<nodeInfo> path = graph.getPath(start,end);
     gv->setVertexColor(start.nodeID, "red");
     gv->setVertexColor(end.nodeID, "green");
     for (int i = 1; i < path.size() - 1; i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
     }
-    //TEMPORARIO END
-
     gv->rearrange();
+    //TEMPORARIO END
 }
 
 void mainMenu()

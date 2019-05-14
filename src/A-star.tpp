@@ -1,7 +1,7 @@
 #include <algorithm>
 
 template<class T>
-void Graph<T>::dijkstraShortestPath(const T &origin, const T &end) {
+void Graph<T>::aStarShortestPath(const T &origin, const T &end) {
     for(auto v: vertexSet)
     {
         v->dist = INF;
@@ -28,23 +28,17 @@ void Graph<T>::dijkstraShortestPath(const T &origin, const T &end) {
                 w.dest->dist = v->getDist() + w.weight;
                 w.dest->path = v;
                 if (oldDist == INF)
-                    q.insert(w.dest);
+                    q.insert(w.dest+cartesianDistance(&v->getInfo(), &end));
                 else
-                    q.decreaseKey(w.dest);
+                    q.decreaseKey(w.dest+cartesianDistance(&v->getInfo(), &end));
             }
         }
     }
 }
 
 template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
-    vector<T> res;
-    Vertex<T> *d = findVertex(dest);
-    while(d->path != NULL) {
-        res.push_back(d->getInfo());
-        d = d->path;
-    }
-    res.push_back(origin);
-    reverse(res.begin(),res.end());
-    return res;
+double cartesianDistance (T* point1, const T* point2) {
+    nodeInfo* info1 = (nodeInfo*) point1;
+    nodeInfo* info2 = (nodeInfo*) point2;
+    return (sqrt(pow(info1->lon-info2->lon,2)+pow(info1->lat-info2->lat,2)));
 }
