@@ -19,5 +19,5 @@ add_executable(Project src/main.cpp
         src/GraphViewer/connection.cpp
         src/GraphViewer/edgetype.h
         src/GraphViewer/graphviewer.h
-        src/GraphViewer/graphviewer.cpp)
+        src/GraphViewer/graphviewer.cpp src/A-star.tpp)
 

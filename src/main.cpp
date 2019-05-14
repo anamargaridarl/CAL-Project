@@ -5,6 +5,7 @@
 #include "Vehicle.h"
 #include "Menu.h"
 #include "GraphImporter.h"
+#include "GraphViewer/graphviewer.h"
 #include "Dijkstra.tpp"
 #include <dirent.h>
 
@@ -18,12 +19,54 @@ Vertex<nodeInfo>* endVertex;
 
 void loadChosenMap(string name)
 {
-    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_lat_lon_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
+    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
 }
 
-void viewLoadedMap()
+void displayMap()
 {
-    cout << "----WIP----" << endl;
+    GraphViewer *gv = new GraphViewer(600, 600, false);
+
+    gv->createWindow(600, 600);
+    gv->defineVertexColor("blue");
+    gv->defineEdgeColor("black");
+
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
+    }
+
+    gv->addNode(0, 0, 0);
+
+    int i = 0;
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        for (Edge<nodeInfo> e : v->getEdges()) {
+            bool bidirect = false;
+            for(Edge<nodeInfo> e2 : e.getDest()->getEdges()) {
+                if(e2.getDest() == v) {
+                    bidirect = true;
+                    break;
+                }
+            }
+            if(bidirect)
+                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::UNDIRECTED);
+            else
+                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
+        }
+    }
+
+    //TEMPORARIO
+    nodeInfo start;
+    start.nodeID = 90379619;
+    nodeInfo end;
+    end.nodeID = 1108123577;
+    graph.dijkstraShortestPath(start, end);
+    vector<nodeInfo> path = graph.getPath(start,end);
+    gv->setVertexColor(start.nodeID, "red");
+    gv->setVertexColor(end.nodeID, "green");
+    for (int i = 1; i < path.size() - 1; i++) {
+        gv->setVertexColor(path[i].nodeID, "yellow");
+    }
+    gv->rearrange();
+    //TEMPORARIO END
 }
 
 void loadMapMenu()
@@ -43,7 +86,7 @@ void loadMapMenu()
         return;
     }
 
-    options.push_back(new Option("View Loaded Map", viewLoadedMap));
+    options.push_back(new Option("View Loaded Map", displayMap));
 
     Menu loadMapMenu("Choose Map to Load", options);
 

@@ -80,6 +80,7 @@ public:
     Edge(Vertex<T> *d, Vertex<T>* s, double w);
     friend class Graph<T>;
     friend class Vertex<T>;
+    Vertex<T>* getDest();
 };
 
 #include "Edge.tpp"
@@ -98,8 +99,8 @@ public:
 	vector<Vertex<T> *> getVertexSet() const;
 
 
-	void dijkstraShortestPath(const T &s);
-	//void dijkstraShortestPathOld(const T &s);
+	void dijkstraShortestPath(const T &s, const T &e);
+    void aStarShortestPath(const T &s, const T &e);
 	vector<T> getPath(const T &origin, const T &dest) const;
 
 
@@ -108,6 +109,7 @@ public:
 
 #include "Graph.tpp"
 #include "Dijkstra.tpp"
+#include "A-star.tpp"
 
 /**************** Single Source Shortest Path algorithms ************/
 
