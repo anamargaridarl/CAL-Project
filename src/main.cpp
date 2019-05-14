@@ -17,7 +17,7 @@ Vertex<nodeInfo>* endVertex;
 
 void loadMapMenu()
 {
-    graph = importGraph("../GraphFiles/Porto/T01_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T01_edges_Porto.txt", "");
+    graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
 }
 
 void vehicleCreation()
