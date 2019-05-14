@@ -1,3 +1,5 @@
+#ifndef DIJKSTRA_TPP_
+#define DIJKSTRA_TPP_
 
 template<class T>
 void Graph<T>::dijkstraShortestPath(const T &origin) {
@@ -48,3 +50,5 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
     reverse(res.begin(),res.end());
     return res;
 }
+
+#endif

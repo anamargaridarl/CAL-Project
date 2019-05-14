@@ -40,7 +40,7 @@ typedef struct nodeInfo {
         else
             return false;
     }
-};
+}nodeInfo;
 
 /************************* Vertex  **************************/
 

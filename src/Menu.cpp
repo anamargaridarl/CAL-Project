@@ -56,7 +56,7 @@ void Menu::run() {
     running = true;
     while(running)
     {
-        cout << "|----" << menuName << "----" << endl;
+        cout << "\n|----" << menuName << "----" << endl;
         displayOptions();
         navigateOptions();
     }
