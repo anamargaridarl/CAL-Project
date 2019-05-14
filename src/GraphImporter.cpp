@@ -14,6 +14,12 @@ Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string t
     ifstream edgesFile(edgesFilePath);
     //ifstream tagsFile(tagsFilePath);
 
+    if(!nodesFile.is_open() || !edgesFile.is_open())
+    {
+        cout << "The path: " << nodesFilePath << endl << "Is INVALID!" << endl;
+        return graph;
+    }
+
     loadNodes(graph, nodesFile);
     loadEdges(graph, edgesFile);
 
@@ -29,7 +35,7 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
     }
     catch (invalid_argument)
     {
-        cout << "O Henrique fez merda!" << endl;
+        cout << "Invalid Format in Nodes file!" << endl;
         return;
     }
 
@@ -59,7 +65,7 @@ void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile) {
     }
     catch (invalid_argument)
     {
-        cout << "O Henrique fez merda OUTRA VEZ!" << endl;
+        cout << "Invalid Format in Edges file!" << endl;
         return;
     }
 

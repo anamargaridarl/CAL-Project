@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include "GraphImporter.h"
 #include "Dijkstra.tpp"
+#include <dirent.h>
 
 using namespace std;
 
@@ -15,9 +16,39 @@ Graph<nodeInfo> graph;
 Vertex<nodeInfo>* startVertex;
 Vertex<nodeInfo>* endVertex;
 
+void loadChosenMap(string name)
+{
+    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_lat_lon_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
+}
+
+void viewLoadedMap()
+{
+    cout << "----WIP----" << endl;
+}
+
 void loadMapMenu()
 {
-    graph = importGraph("../GraphFiles/Porto/T08_nodes_lat_lon_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
+    vector<Option*> options;
+
+    DIR *dir;
+    if ((dir = opendir ("../GraphFiles/")) != NULL) {
+        struct dirent *currentFolder;
+        while ((currentFolder = readdir (dir)) != NULL) {
+            if((strcmp(currentFolder->d_name, ".") == 0) || (strcmp(currentFolder->d_name, "..") == 0))continue;
+            else options.push_back(new StringOption(currentFolder->d_name, loadChosenMap));
+        }
+        closedir (dir);
+    } else {
+        perror ("GraphFiles Directory not found!");
+        return;
+    }
+
+    options.push_back(new Option("View Loaded Map", viewLoadedMap));
+
+    Menu loadMapMenu("Choose Map to Load", options);
+
+    //Criar função que aceite um argumento do tipo string
+    loadMapMenu.run();
 }
 
 void vehicleCreation()
@@ -85,10 +116,10 @@ void removeVehicle()
 
 void vehiclesMenu()
 {
-    vector<Option> options;
-    options.push_back(Option("List all Vehicles", listAllVehicles));
-    options.push_back(Option("Create New Vehicle", vehicleCreation));
-    options.push_back(Option("Remove Vehicle", removeVehicle));
+    vector<Option*> options;
+    options.push_back(new Option("List all Vehicles", listAllVehicles));
+    options.push_back(new Option("Create New Vehicle", vehicleCreation));
+    options.push_back(new Option("Remove Vehicle", removeVehicle));
     Menu vehiclesMenu("Vehicles Menu", options);
 
     vehiclesMenu.run();
@@ -199,10 +230,10 @@ void createJourneyMenu()
 
 void mainMenu()
 {
-    vector<Option> options;
-    options.push_back(Option("Load Map", loadMapMenu));
-    options.push_back(Option("Vehicles", vehiclesMenu));
-    options.push_back(Option("Create Journey", createJourneyMenu));
+    vector<Option*> options;
+    options.push_back(new Option("Load Map", loadMapMenu));
+    options.push_back(new Option("Vehicles", vehiclesMenu));
+    options.push_back(new Option("Create Journey", createJourneyMenu));
     Menu mainMenu("Main Menu", options);
 
     mainMenu.run();

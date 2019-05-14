@@ -9,7 +9,7 @@
 
 class Menu {
 public:
-    Menu(const std::string &menuName, std::vector<Option> menuOptions);
+    Menu(const std::string &menuName, std::vector<Option*> menuOptions);
     void run();
 private:
     bool running;
@@ -23,7 +23,7 @@ protected:
     Menu();
 
     std::string menuName;
-    std::vector<Option> menuOptions;
+    std::vector<Option*> menuOptions;
 };
 
 

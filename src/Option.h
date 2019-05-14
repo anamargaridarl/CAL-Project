@@ -12,14 +12,25 @@
 class Option {
 public:
     Option(const std::string &optionName, std::function<void()> optionFunc);
+    Option(const std::string &optionName);
 
     const std::string &getOptionName() const;
+    virtual void clickFunc() const;
 
-    void clickFunc() const;
+protected:
+    std::string optionName;
 
 private:
-    std::string optionName;
     std::function<void()> optionFunc;
+};
+
+class StringOption: public Option{
+public:
+    StringOption(const std::string &optionName, std::function<void(std::string)>);
+    void clickFunc() const override;
+
+private:
+    std::function<void(std::string)> stringOptionFunc;
 };
 
 

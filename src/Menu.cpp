@@ -3,10 +3,10 @@
 
 using namespace std;
 
-Menu::Menu(const std::string &menuName, std::vector<Option> menuOptions)
+Menu::Menu(const std::string &menuName, std::vector<Option*> menuOptions)
         : menuName(menuName) {
     running = false;
-    Option backOption("Back", nullFunction);
+    Option* backOption = new Option("Back", nullFunction);
     menuOptions.push_back(backOption);
     this->menuOptions = menuOptions;
 }
@@ -15,8 +15,8 @@ void Menu::displayOptions()
 {
     for(unsigned int i = 0; i < menuOptions.size(); i++)
     {
-        Option option = menuOptions.at(i);
-        cout << "|" << i << ": " << option.getOptionName() << endl;
+        Option* option = menuOptions.at(i);
+        cout << "|" << i << ": " << option->getOptionName() << endl;
     }
     string s(menuName.length() + 8, '-');
     cout << "|" + s << endl;
@@ -49,7 +49,7 @@ void Menu::navigateOptions()
         running = false;
         return;
     }
-    menuOptions.at(optionNumber).clickFunc();
+    menuOptions.at(optionNumber)->clickFunc();
 }
 
 void Menu::run() {
