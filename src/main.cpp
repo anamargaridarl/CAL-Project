@@ -12,6 +12,7 @@
 using namespace std;
 
 GraphViewer *gv = new GraphViewer(600, 600, false);
+
 vector<Vehicle*> vehicles;
 Graph<nodeInfo> graph;
 //TEMPORARY TO TEST DIJKSTRA
@@ -25,10 +26,6 @@ void displayMap()
         cout << "There's no map Loaded!" << endl;
         return;
     }
-
-    gv->createWindow(600, 600);
-    gv->defineVertexColor("blue");
-    gv->defineEdgeColor("black");
 
     for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
         gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
@@ -57,6 +54,7 @@ void displayMap()
 
 void displayPath(nodeInfo start, nodeInfo end, vector<nodeInfo> path)
 {
+    displayMap();
     for (int i = 1; i < path.size() - 1; i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
     }
@@ -284,6 +282,9 @@ void mainMenu()
 }
 
 int main() {
+    gv->createWindow(600, 600);
+    gv->defineVertexColor("blue");
+    gv->defineEdgeColor("black");
     mainMenu();
     return 0;
 }
