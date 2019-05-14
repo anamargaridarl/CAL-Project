@@ -1,3 +1,6 @@
+#ifndef DIJKSTRA_TPP_
+#define DIJKSTRA_TPP_
+
 #include <algorithm>
 
 template<class T>
@@ -48,3 +51,5 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
     reverse(res.begin(),res.end());
     return res;
 }
+
+#endif

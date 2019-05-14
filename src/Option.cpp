@@ -14,3 +14,13 @@ const std::string &Option::getOptionName() const {
 void Option::clickFunc() const {
     optionFunc();
 }
+
+Option::Option(const std::string &optionName) : optionName(optionName){
+    optionFunc = nullptr;
+}
+
+StringOption::StringOption(const std::string &optionName, std::function<void(std::string)> function) : Option(optionName), stringOptionFunc(function){}
+
+void StringOption::clickFunc() const {
+    stringOptionFunc(optionName);
+}

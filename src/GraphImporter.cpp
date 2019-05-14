@@ -14,6 +14,12 @@ Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string t
     ifstream edgesFile(edgesFilePath);
     //ifstream tagsFile(tagsFilePath);
 
+    if(!nodesFile.is_open() || !edgesFile.is_open())
+    {
+        cout << "The path: " << nodesFilePath << endl << "Is INVALID!" << endl;
+        return graph;
+    }
+
     loadNodes(graph, nodesFile);
     loadEdges(graph, edgesFile);
 
@@ -23,7 +29,15 @@ Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string t
 void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
     string line;
     getline(nodesFile, line);
-    int numNodes = stoi(line);
+    int numNodes;
+    try{
+        numNodes = stoi(line);
+    }
+    catch (invalid_argument)
+    {
+        cout << "Invalid Format in Nodes file!" << endl;
+        return;
+    }
 
     for (unsigned int i = 0; i < numNodes; i++) {
         int nodeID;
@@ -45,7 +59,15 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
 void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile) {
     string line;
     getline(edgesFile, line);
-    int numEdges = stoi(line);
+    int numEdges;
+    try{
+        numEdges = stoi(line);
+    }
+    catch (invalid_argument)
+    {
+        cout << "Invalid Format in Edges file!" << endl;
+        return;
+    }
 
     for (unsigned int i = 0; i < numEdges; i++) {
         int originNodeID, destNodeID;

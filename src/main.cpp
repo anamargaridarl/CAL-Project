@@ -6,15 +6,92 @@
 #include "Menu.h"
 #include "GraphImporter.h"
 #include "GraphViewer/graphviewer.h"
+#include "Dijkstra.tpp"
+#include <dirent.h>
 
 using namespace std;
 
 vector<Vehicle*> vehicles;
 Graph<nodeInfo> graph;
+//TEMPORARY TO TEST DIJKSTRA
+Vertex<nodeInfo>* startVertex;
+Vertex<nodeInfo>* endVertex;
+
+void loadChosenMap(string name)
+{
+    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
+}
+
+void displayMap()
+{
+    GraphViewer *gv = new GraphViewer(600, 600, false);
+
+    gv->createWindow(600, 600);
+    gv->defineVertexColor("blue");
+    gv->defineEdgeColor("black");
+
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
+    }
+
+    gv->addNode(0, 0, 0);
+
+    int i = 0;
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        for (Edge<nodeInfo> e : v->getEdges()) {
+            bool bidirect = false;
+            for(Edge<nodeInfo> e2 : e.getDest()->getEdges()) {
+                if(e2.getDest() == v) {
+                    bidirect = true;
+                    break;
+                }
+            }
+            if(bidirect)
+                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::UNDIRECTED);
+            else
+                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
+        }
+    }
+
+    //TEMPORARIO
+    nodeInfo start;
+    start.nodeID = 90379619;
+    nodeInfo end;
+    end.nodeID = 1108123577;
+    graph.dijkstraShortestPath(start, end);
+    vector<nodeInfo> path = graph.getPath(start,end);
+    gv->setVertexColor(start.nodeID, "red");
+    gv->setVertexColor(end.nodeID, "green");
+    for (int i = 1; i < path.size() - 1; i++) {
+        gv->setVertexColor(path[i].nodeID, "yellow");
+    }
+    gv->rearrange();
+    //TEMPORARIO END
+}
 
 void loadMapMenu()
 {
-    graph = importGraph("../GraphFiles/Porto/T08_nodes_X_Y_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "");
+    vector<Option*> options;
+
+    DIR *dir;
+    if ((dir = opendir ("../GraphFiles/")) != NULL) {
+        struct dirent *currentFolder;
+        while ((currentFolder = readdir (dir)) != NULL) {
+            if((strcmp(currentFolder->d_name, ".") == 0) || (strcmp(currentFolder->d_name, "..") == 0))continue;
+            else options.push_back(new StringOption(currentFolder->d_name, loadChosenMap));
+        }
+        closedir (dir);
+    } else {
+        perror ("GraphFiles Directory not found!");
+        return;
+    }
+
+    options.push_back(new Option("View Loaded Map", displayMap));
+
+    Menu loadMapMenu("Choose Map to Load", options);
+
+    //Criar função que aceite um argumento do tipo string
+    loadMapMenu.run();
 }
 
 void vehicleCreation()
@@ -82,10 +159,10 @@ void removeVehicle()
 
 void vehiclesMenu()
 {
-    vector<Option> options;
-    options.push_back(Option("List all Vehicles", listAllVehicles));
-    options.push_back(Option("Create New Vehicle", vehicleCreation));
-    options.push_back(Option("Remove Vehicle", removeVehicle));
+    vector<Option*> options;
+    options.push_back(new Option("List all Vehicles", listAllVehicles));
+    options.push_back(new Option("Create New Vehicle", vehicleCreation));
+    options.push_back(new Option("Remove Vehicle", removeVehicle));
     Menu vehiclesMenu("Vehicles Menu", options);
 
     vehiclesMenu.run();
@@ -93,64 +170,113 @@ void vehiclesMenu()
 
 void createJourneyMenu()
 {
-    cout << "----!WIP!----" << endl << endl;
-}
+    if(graph.getVertexSet().empty())
+    {
+        cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
+        return;
+    }
+    int startPointID = -1;
+    int finalPointID = -1;
 
-void displayMap()
-{
-    GraphViewer *gv = new GraphViewer(600, 600, false);
-
-    gv->createWindow(600, 600);
-    gv->defineVertexColor("blue");
-    gv->defineEdgeColor("black");
-
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
-        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
+    cout << "Insert ID of the start point for all Vehicles: " << flush;
+    while(!(cin >> startPointID) || (startVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
+    {
+        cout << "ERROR: Invalid Location!" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Insert the start point for all Vehicles: " << flush;
     }
 
-    gv->addNode(0, 0, 0);
+    cout << "TEMPORARY: Insert ID of the destination: " << flush;
+    while(!(cin >> finalPointID) || (endVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
+    {
+        cout << "ERROR: Invalid Location!" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Insert ID of the destination: " << flush;
+    }
 
-    int i = 0;
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
-        for (Edge<nodeInfo> e : v->getEdges()) {
-            bool bidirect = false;
-            for(Edge<nodeInfo> e2 : e.getDest()->getEdges()) {
-                if(e2.getDest() == v) {
-                    bidirect = true;
+    //Show the 2 points on the Map
+
+    graph.getPath(startVertex->getInfo(), endVertex->getInfo());
+
+    //Show trajectory on the Map
+
+    /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
+    while(true)
+    {
+        string userIntput;
+        Vertex<nodeInfo>* retrievalVertex;
+        bool invalidID = true;
+        //tuple<RetrievalVertex, List<DeliveryVertex>>
+        do
+        {
+            int retrievalID = -1;
+            cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
+            cin >> userIntput;
+            if (userIntput == "!") return;
+            try{
+                retrievalID = stoi(userIntput);
+            }
+            catch(invalid_argument)
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid Input!" << endl;
+                continue;
+            }
+
+            invalidID = ((retrievalVertex = graph.findVertex(retrievalID)) == NULL);
+            if(invalidID)
+            {
+                cout << "ERROR: Invalid Location!" << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+        }while(invalidID);
+
+        invalidID = true;
+        Vertex<nodeInfo>* deliveryVertex;
+        bool insertingDelivery = true;
+        while(insertingDelivery) {
+            do {
+                int deliveryID = -1;
+                cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
+                cin >> userIntput;
+                if (userIntput == "!")
+                {
+                    insertingDelivery = false;
                     break;
                 }
-            }
-            if(bidirect)
-                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::UNDIRECTED);
-            else
-                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
-            cout << i << endl;
+                try {
+                    deliveryID = stoi(userIntput);
+                }
+                catch (invalid_argument) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "Invalid Input!" << endl;
+                    continue;
+                }
+
+                invalidID = ((deliveryVertex = graph.findVertex(deliveryID)) == NULL ||
+                             deliveryVertex == retrievalVertex);
+                {
+                    cout << "ERROR: Invalid Location!" << endl;
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
+            } while (invalidID);
         }
     }
-
-    //TEMPORARIO
-    nodeInfo start;
-    start.nodeID = 90379619;
-    nodeInfo end;
-    end.nodeID = 1108123577;
-    graph.dijkstraShortestPath(start, end);
-    vector<nodeInfo> path = graph.getPath(start,end);
-    gv->setVertexColor(start.nodeID, "red");
-    gv->setVertexColor(end.nodeID, "green");
-    for (int i = 1; i < path.size() - 1; i++) {
-        gv->setVertexColor(path[i].nodeID, "yellow");
-    }
-    gv->rearrange();
-    //TEMPORARIO END
+     */
 }
 
 void mainMenu()
 {
-    vector<Option> options;
-    options.push_back(Option("Load Map", loadMapMenu));
-    options.push_back(Option("Vehicles", vehiclesMenu));
-    options.push_back(Option("Create Journey", createJourneyMenu));
-    options.push_back(Option("Display Map", displayMap));
+    vector<Option*> options;
+    options.push_back(new Option("Load Map", loadMapMenu));
+    options.push_back(new Option("Vehicles", vehiclesMenu));
+    options.push_back(new Option("Create Journey", createJourneyMenu));
     Menu mainMenu("Main Menu", options);
 
     mainMenu.run();
