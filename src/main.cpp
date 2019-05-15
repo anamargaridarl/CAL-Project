@@ -18,6 +18,21 @@ Graph<nodeInfo> graph;
 //TEMPORARY TO TEST DIJKSTRA
 Vertex<nodeInfo>* startVertex;
 Vertex<nodeInfo>* endVertex;
+bool graphViewerLoaded = false;
+
+void clearGraphViewer()
+{
+    int i = 0;
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        gv->removeNode(v->getInfo().nodeID);
+        for(int x = 0; x < v->getEdges().size(); x++)
+        {
+            gv->removeEdge(i);
+            i++;
+        }
+    }
+    gv->rearrange();
+}
 
 void displayMap()
 {
@@ -26,15 +41,15 @@ void displayMap()
         cout << "There's no map Loaded!" << endl;
         return;
     }
+    if(graphViewerLoaded) clearGraphViewer();
 
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
-        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
-    }
+    graphViewerLoaded = true;
 
-    gv->addNode(0, 0, 0);
+    //gv->addNode(0,0,0);
 
     int i = 0;
     for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
         for (Edge<nodeInfo> e : v->getEdges()) {
             bool bidirect = false;
             for(Edge<nodeInfo> e2 : e.getDest()->getEdges()) {
@@ -65,6 +80,7 @@ void displayPath(nodeInfo start, nodeInfo end, vector<nodeInfo> path)
 
 void loadChosenMap(string name)
 {
+    graph.clear();
     graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
 }
 

@@ -55,7 +55,6 @@ class Vertex {
 
 	bool processing = false;
 	void addEdge(Vertex<T> *dest, double w);
-
 public:
 	Vertex(T in);
 	bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
@@ -84,6 +83,7 @@ public:
 };
 
 #include "Edge.tpp"
+#include "GraphViewer/graphviewer.h"
 
 /*************************** Graph  **************************/
 
@@ -105,6 +105,7 @@ public:
 
 	vector<T> getPath(const T &origin, const T &dest) const;
     int getCost(const T &dest) const;
+    void clear();
 };
 
 #include "Graph.tpp"

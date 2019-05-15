@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -25,8 +25,8 @@ class Connection {
 
   bool sendMsg(string msg);
   string readLine();
- private: 
-#ifdef linux
+ private:
+#if defined(linux) || defined(__APPLE__)
   int sock;
 #else
   SOCKET sock;

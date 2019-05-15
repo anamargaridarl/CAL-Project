@@ -32,6 +32,19 @@ bool Graph<T>::addVertex(const T &in) {
 }
 
 /*
+ * Clears the Graph's information
+ */
+template <class T>
+void Graph<T>::clear() {
+    for(Vertex<T>* vertex : vertexSet)
+    {
+        delete vertex;
+    }
+
+    vertexSet.clear();
+}
+
+/*
  * Adds an edge to a graph (this), given the contents of the source and
  * destination vertices and the edge weight (w).
  * Returns true if successful, and false if the source or destination vertex does not exist.
