@@ -1,7 +1,7 @@
 ﻿#ifndef _GRAPH_VIEWER_H_
 #define _GRAPH_VIEWER_H_
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 	#include <unistd.h>
 #else
 	#include <winsock2.h>
@@ -176,7 +176,7 @@ class GraphViewer {
    */
   bool rearrange();
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
   static pid_t procId;
 #endif
 
