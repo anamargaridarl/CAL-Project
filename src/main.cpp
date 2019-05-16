@@ -1,4 +1,6 @@
 #include <iostream>
+#include <tuple>
+#include <dirent.h>
 #include "Graph.h"
 #include "MutablePriorityQueue.h"
 #include "Option.h"
@@ -7,18 +9,14 @@
 #include "GraphImporter.h"
 #include "GraphViewer/graphviewer.h"
 #include "Dijkstra.tpp"
-#include <dirent.h>
 
 using namespace std;
 
 GraphViewer *gv = new GraphViewer(600, 600, false);
+bool graphViewerLoaded = false;
 
 vector<Vehicle*> vehicles;
 Graph<nodeInfo> graph;
-//TEMPORARY TO TEST DIJKSTRA
-Vertex<nodeInfo>* startVertex;
-Vertex<nodeInfo>* endVertex;
-bool graphViewerLoaded = false;
 
 void clearGraphViewer()
 {
@@ -200,102 +198,88 @@ void createJourneyMenu()
         cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
         return;
     }
-    int startPointID = -1;
-    int finalPointID = -1;
 
-    cout << "Insert ID of the start point for all Vehicles: " << flush;
-    while(!(cin >> startPointID) || (startVertex = graph.findVertex(nodeInfo(startPointID))) == NULL)
-    {
-        cout << "ERROR: Invalid Location!" << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Insert the start point for all Vehicles: " << flush;
-    }
-
-    cout << "TEMPORARY: Insert ID of the destination: " << flush;
-    while(!(cin >> finalPointID) || (endVertex = graph.findVertex(nodeInfo(finalPointID))) == NULL)
-    {
-        cout << "ERROR: Invalid Location!" << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Insert ID of the destination: " << flush;
-    }
-
-    //Show the 2 points on the Map
-
-    graph.dijkstraShortestPath(startVertex->getInfo(), endVertex->getInfo());
-
-    vector<nodeInfo> path = graph.getPath(startVertex->getInfo(), endVertex->getInfo());
-
-    //displayPath(startVertex->getInfo(), endVertex->getInfo(), path);
-
-    ///* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
-    while(true)
-    {
-        string userIntput;
-        Vertex<nodeInfo>* retrievalVertex;
+    const auto readPointID = [](int &id) {
+        string userInput;
         bool invalidID = true;
-        //tuple<RetrievalVertex, List<DeliveryVertex>>
-        do
+
+        while(invalidID)
         {
-            int retrievalID = -1;
-            cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
-            cin >> userIntput;
-            if (userIntput == "!") return;
+            cin >> userInput;
+            if (userInput == "!") return false;
             try{
-                retrievalID = stoi(userIntput);
+                id = stoi(userInput);
             }
-            catch(invalid_argument)
+            catch(invalid_argument &e)
             {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Invalid Input!" << endl;
                 continue;
             }
-
-            invalidID = ((retrievalVertex = graph.findVertex(retrievalID)) == NULL);
+            invalidID = (graph.findVertex(id) == nullptr);
             if(invalidID)
             {
                 cout << "ERROR: Invalid Location!" << endl;
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
-        }while(invalidID);
+        }
+        return true;
+    };
 
-        invalidID = true;
-        Vertex<nodeInfo>* deliveryVertex;
+    int startPointID = -1;
+    int finalPointID = -1;
+    cout << "Insert ID of the start point for all Vehicles(! to cancel): " << flush;
+    if(!readPointID(startPointID))
+    {
+        cout << "The trip has been Canceled!" << endl;
+        return;
+    }
+
+    cout << "TEMPORARY: Insert ID of the destination(! to cancel): " << flush;
+    if(!readPointID(finalPointID))
+    {
+        cout << "The trip has been Canceled!" << endl;
+        return;
+    }
+
+    nodeInfo startPoint(startPointID);
+    nodeInfo endPoint(finalPointID);
+    //Show the 2 points on the Map
+
+    //TEMPORARY Dijkstra
+    graph.dijkstraShortestPath(startPoint, endPoint);
+    vector<nodeInfo> path = graph.getPath(startPoint, endPoint);
+    displayPath(startPoint, endPoint, path);
+
+    /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
+    vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries;
+    while(true)
+    {
+        int retrievalID = -1;
+        cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
+        if(!readPointID(retrievalID)) break;
+        nodeInfo retrievalPoint(retrievalID);
+
+        vector<nodeInfo> deliveryPoints;
         bool insertingDelivery = true;
         while(insertingDelivery) {
-            do {
-                int deliveryID = -1;
-                cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
-                cin >> userIntput;
-                if (userIntput == "!")
-                {
-                    insertingDelivery = false;
-                    break;
-                }
-                try {
-                    deliveryID = stoi(userIntput);
-                }
-                catch (invalid_argument) {
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cout << "Invalid Input!" << endl;
-                    continue;
-                }
-
-                invalidID = ((deliveryVertex = graph.findVertex(deliveryID)) == NULL ||
-                             deliveryVertex == retrievalVertex);
-                {
-                    cout << "ERROR: Invalid Location!" << endl;
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                }
-            } while (invalidID);
+            int deliveryID = -1;
+            cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
+            if(!readPointID(deliveryID)) insertingDelivery = false;
+            nodeInfo deliveryPoint(deliveryID);
+            deliveryPoints.push_back(deliveryPoint);
         }
+
+        //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
+        //Check if there is still merch which has not been delivered (When weights are added)
+
+        //Insert the retrieval and it's delivery list into the List of PoI
+        tuple<nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
+        deliveries.push_back(delivery);
     }
-    // */
+    */
 }
 
 void mainMenu()
