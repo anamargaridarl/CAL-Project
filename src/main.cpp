@@ -27,11 +27,13 @@ void displayMap()
         return;
     }
 
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
-        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
-    }
+    Vertex<nodeInfo> *firstVertex = graph.getVertexSet()[0];
+    int offsetX = firstVertex->getInfo().lat;
+    int offsetY = firstVertex->getInfo().lon;
 
-    gv->addNode(0, 0, 0);
+    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-offsetX, v->getInfo().lon-offsetY);
+    }
 
     int i = 0;
     for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
@@ -89,6 +91,7 @@ void loadMapMenu()
 
     loadMapMenu.run();
 
+    /*
     //TEMP
     vector<nodeInfo> nodes;
 
@@ -101,6 +104,7 @@ void loadMapMenu()
     nodes.push_back(n3);
 
     graph.clarkeWright(nodes);
+    */
 }
 
 void vehicleCreation()

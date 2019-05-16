@@ -27,8 +27,10 @@ Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string t
 }
 
 void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
+    cout << "Loading nodes..." << endl;
     string line;
     getline(nodesFile, line);
+
     int numNodes;
     try{
         numNodes = stoi(line);
@@ -39,7 +41,7 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
         return;
     }
 
-    for (unsigned int i = 0; i < numNodes; i++) {
+    for (unsigned long int i = 0; i < numNodes; i++) {
         int nodeID;
         float lat, lon;
 
@@ -57,6 +59,7 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
 }
 
 void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile) {
+    cout << "Loading edges..." << endl;
     string line;
     getline(edgesFile, line);
     int numEdges;
@@ -69,7 +72,7 @@ void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile) {
         return;
     }
 
-    for (unsigned int i = 0; i < numEdges; i++) {
+    for (unsigned long int i = 0; i < numEdges; i++) {
         int originNodeID, destNodeID;
 
         getline(edgesFile, line);
