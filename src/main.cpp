@@ -41,11 +41,10 @@ void displayMap()
         cout << "There's no map Loaded!" << endl;
         return;
     }
-    if(graphViewerLoaded) clearGraphViewer();
-
-    graphViewerLoaded = true;
 
     //gv->addNode(0,0,0);
+
+    graphViewerLoaded = true;
 
     int i = 0;
     for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
@@ -80,6 +79,7 @@ void displayPath(nodeInfo start, nodeInfo end, vector<nodeInfo> path)
 
 void loadChosenMap(string name)
 {
+    if(graphViewerLoaded) clearGraphViewer();
     graph.clear();
     graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
 }
@@ -222,15 +222,14 @@ void createJourneyMenu()
     }
 
     //Show the 2 points on the Map
-    cout << "START ID: " << startVertex->getInfo().nodeID << "   END ID: " << endVertex->getInfo().nodeID << endl;
 
     graph.dijkstraShortestPath(startVertex->getInfo(), endVertex->getInfo());
 
     vector<nodeInfo> path = graph.getPath(startVertex->getInfo(), endVertex->getInfo());
 
-    displayPath(startVertex->getInfo(), endVertex->getInfo(), path);
+    //displayPath(startVertex->getInfo(), endVertex->getInfo(), path);
 
-    /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
+    ///* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
     while(true)
     {
         string userIntput;
@@ -296,7 +295,7 @@ void createJourneyMenu()
             } while (invalidID);
         }
     }
-     */
+    // */
 }
 
 void mainMenu()
