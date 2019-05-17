@@ -261,7 +261,7 @@ void createJourneyMenu()
     vertexList.push_back(startVertex);
     vertexList.push_back(endVertex);
 
-    ///* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
+    /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
     vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries;
     while(true)
     {
