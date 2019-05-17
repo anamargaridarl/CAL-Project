@@ -64,6 +64,7 @@ public:
 	Vertex *getPath() const;
 	friend class Graph<T>;
 	friend class MutablePriorityQueue<Vertex<T>>;
+    bool isVisited(){ return visited; }
 };
 
 #include "Vertex.tpp"
@@ -90,6 +91,7 @@ public:
 template <class T>
 class Graph {
 	vector<Vertex<T> *> vertexSet;    // vertex set
+    void dfsVisit(Vertex<T> *v, vector<T> & res) const;
 
 public:
 	Vertex<T> *findVertex(const T &in) const;
@@ -99,13 +101,16 @@ public:
 	vector<Vertex<T> *> getVertexSet() const;
 
 
-	void dijkstraShortestPath(const T &s, const T &e);
-    void aStarShortestPath(const T &s, const T &e);
+	void dijkstraShortestPath(const T &origin, const T &end);
+    void aStarShortestPath(const T &origin, const T &end);
     vector<vector<T>> clarkeWright(vector<T> points);
 
 	vector<T> getPath(const T &origin, const T &dest) const;
     int getCost(const T &dest) const;
     void clear();
+
+    vector<T> dfs(Vertex<T>* startVertex) const;
+    void clearVisitedVertexes();
 };
 
 #include "Graph.tpp"

@@ -58,3 +58,37 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
     v1->addEdge(v2,w);
     return true;
 }
+
+/*
+ * Performs a depth-first search (dfs) in a graph (this) starting in a given vertex.
+ * Returns a vector with the contents of the vertices by dfs order.
+ * Follows the algorithm described in theoretical classes.
+ */
+template <class T>
+vector<T> Graph<T>::dfs(Vertex<T>* startVertex) const {
+    vector<T> res;
+    dfsVisit(startVertex, res);
+    return res;
+}
+
+/*
+ * Auxiliary function that visits a vertex (v) and its adjacent not yet visited, recursively.
+ * Updates a parameter with the list of visited node contents.
+ */
+template <class T>
+void Graph<T>::dfsVisit(Vertex<T> *v, vector<T> & res) const {
+    v->visited = true;
+    res.push_back(v->info);
+    for(auto edge : v->adj)
+    {
+        if(!edge.dest->visited) dfsVisit(edge.dest, res);
+    }
+}
+
+template<class T>
+void Graph<T>::clearVisitedVertexes() {
+    for(auto v : vertexSet)
+    {
+        v->visited = false;
+    }
+}
