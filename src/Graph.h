@@ -101,8 +101,9 @@ public:
 	vector<Vertex<T> *> getVertexSet() const;
 
 
-	void dijkstraShortestPath(const T &origin, const T &end);
-    void aStarShortestPath(const T &origin, const T &end);
+	void dijkstraShortestPath(const T &s, const T &e);
+    void aStarShortestPath(const T &s, const T &e);
+    vector<vector<T>> nearestNeighbour(T startPoint, vector<T> points);
     vector<vector<T>> clarkeWright(vector<T> points);
 
 	vector<T> getPath(const T &origin, const T &dest) const;
@@ -116,7 +117,7 @@ public:
 #include "Graph.tpp"
 #include "Dijkstra.tpp"
 #include "A-star.tpp"
-#include "ClarkeWright.tpp"
+#include "NearestNeighbour.tpp"
 
 /**************** Single Source Shortest Path algorithms ************/
 
