@@ -19,7 +19,7 @@ add_executable(Project src/main.cpp
         src/Menu.h
         src/GraphImporter.cpp
         src/GraphImporter.h
-        src/NearestNeighbour.tpp
+        src/NearestNeighbour.cpp
         src/GraphViewer/connection.h
         src/GraphViewer/connection.cpp
         src/GraphViewer/edgetype.h

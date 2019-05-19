@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include <tuple>
 
 int Graph::getNumVertex() const {
     return vertexSet.size();
@@ -54,4 +55,35 @@ bool Graph::addEdge(const nodeInfo &sourc, const nodeInfo &dest, double w) {
         return false;
     v1->addEdge(v2,w);
     return true;
+}
+
+/*
+ * Performs a depth-first search (dfs) in a graph (this) starting in a given vertex.
+ * Returns a vector with the contents of the vertices by dfs order.
+ * Follows the algorithm described in theoretical classes.
+ */
+vector<nodeInfo> Graph::dfs(Vertex* startVertex) const {
+    vector<nodeInfo> res;
+    dfsVisit(startVertex, res);
+    return res;
+}
+
+/*
+ * Auxiliary function that visits a vertex (v) and its adjacent not yet visited, recursively.
+ * Updates a parameter with the list of visited node contents.
+ */
+void Graph::dfsVisit(Vertex *v, vector<nodeInfo> & res) const {
+    v->visited = true;
+    res.push_back(v->info);
+    for(auto edge : v->adj)
+    {
+        if(!edge.dest->visited) dfsVisit(edge.dest, res);
+    }
+}
+
+void Graph::clearVisitedVertexes() {
+    for(auto v : vertexSet)
+    {
+        v->visited = false;
+    }
 }

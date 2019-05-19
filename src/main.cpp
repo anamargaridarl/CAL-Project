@@ -10,6 +10,7 @@
 #include "GraphViewer/graphviewer.h"
 #include "Dijkstra.cpp"
 
+
 using namespace std;
 
 GraphViewer *gv = new GraphViewer(600, 600, false);
@@ -222,6 +223,8 @@ void createJourneyMenu()
         return true;
     };
 
+    vector<Vertex*> vertexList;
+
     int startPointID = -1;
     int finalPointID = -1;
     cout << "Insert ID of the start point for all Vehicles(! to cancel): " << flush;
@@ -238,14 +241,14 @@ void createJourneyMenu()
         return;
     }
 
-    nodeInfo startPoint(startPointID);
-    nodeInfo endPoint(finalPointID);
     //Show the 2 points on the Map
 
-    //TEMPORARY Dijkstra
-    graph.dijkstraShortestPath(startPoint, endPoint);
-    vector<nodeInfo> path = graph.getPath(startPoint, endPoint);
-    displayPath(startPoint, endPoint, path);
+    nodeInfo startPoint(startPointID);
+    nodeInfo endPoint(finalPointID);
+    Vertex* startVertex = graph.findVertex(startPoint);
+    Vertex* endVertex = graph.findVertex(endPoint);
+    vertexList.push_back(startVertex);
+    vertexList.push_back(endVertex);
 
     /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
     vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries;
@@ -274,6 +277,24 @@ void createJourneyMenu()
         deliveries.push_back(delivery);
     }
     */
+
+    graph.dfs(startVertex);
+    bool possible = true;
+    for(auto v : vertexList)
+    {
+        if(!v->isVisited())
+        {
+            possible = false;
+            cout << "Vertex with ID: " << v->getInfo().nodeID << " Is inaccessible from the starting position" << endl;
+        }
+    }
+    graph.clearVisitedVertexes();
+    if(!possible) return;
+
+    //TEMPORARY Dijkstra
+    graph.dijkstraShortestPath(startPoint, endPoint);
+    vector<nodeInfo> path = graph.getPath(startPoint, endPoint);
+    displayPath(startPoint, endPoint, path);
 }
 
 void mainMenu()

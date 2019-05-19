@@ -4,6 +4,7 @@
 #include <vector>
 #include "Edge.h"
 #include "MutablePriorityQueue.h"
+#include <math.h>
 
 using namespace std;
 
@@ -25,6 +26,11 @@ typedef struct nodeInfo {
             return true;
         else
             return false;
+    }
+
+    inline double distance(nodeInfo node)
+    {
+        return sqrt(pow((lat - node.lat),2) + pow(lon - node.lon, 2));
     }
 } nodeInfo;
 
@@ -49,6 +55,7 @@ public:
     Vertex *getPath() const;
     friend class Graph;
     friend class MutablePriorityQueue<Vertex>;
+    bool isVisited();
 };
 
 #endif //CAL_PROJECT_VERTEX_H

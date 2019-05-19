@@ -9,6 +9,7 @@
 #include <list>
 #include <limits>
 #include <cmath>
+#include <tuple>
 #include "MutablePriorityQueue.h"
 #include "Vertex.h"
 
@@ -20,6 +21,9 @@ using namespace std;
 
 class Graph {
 	vector<Vertex *> vertexSet;    // vertex set
+
+    void dfsVisit(Vertex *v, vector<nodeInfo> & res) const;
+    tuple<nodeInfo, vector<nodeInfo>> getShortestPath(nodeInfo point, vector<nodeInfo> destinations);
 
 public:
 	Vertex *findVertex(const nodeInfo &in) const;
@@ -34,8 +38,15 @@ public:
     vector<vector<nodeInfo>> nearestNeighbour(nodeInfo startPoint, vector<nodeInfo> points);
 
 	vector<nodeInfo> getPath(const nodeInfo &origin, const nodeInfo &dest) const;
-    int getCost(const nodeInfo &dest) const;
+    double getCost(const nodeInfo &dest) const;
     void clear();
+
+    vector<nodeInfo> dfs(Vertex* startVertex) const;
+    void clearVisitedVertexes();
+
+    vector<nodeInfo> nearestNeighbour(nodeInfo startPoint,  vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries);
+
+    double getPathCost(vector<nodeInfo> path);
 };
 
 /**************** Single Source Shortest Path algorithms ************/

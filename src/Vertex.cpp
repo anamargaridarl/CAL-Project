@@ -25,3 +25,7 @@ double Vertex::getDist() const {
 Vertex *Vertex::getPath() const {
     return this->path;
 }
+
+bool Vertex::isVisited() {
+    return visited;
+}

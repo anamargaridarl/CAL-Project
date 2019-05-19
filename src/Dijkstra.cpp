@@ -48,7 +48,7 @@ vector<nodeInfo> Graph::getPath(const nodeInfo &origin, const nodeInfo &dest) co
     return res;
 }
 
-int Graph::getCost(const nodeInfo &dest) const{
+double Graph::getCost(const nodeInfo &dest) const{
     Vertex *destV = findVertex(dest);
     return destV->getDist();
 }
