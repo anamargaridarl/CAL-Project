@@ -1,27 +1,24 @@
-#ifndef DIJKSTRA_TPP_
-#define DIJKSTRA_TPP_
-
 #include <algorithm>
+#include "Graph.h"
 
-template<class T>
-void Graph<T>::dijkstraShortestPath(const T &origin, const T &end) {
+void Graph::dijkstraShortestPath(const nodeInfo &origin, const nodeInfo &end) {
     for(auto v: vertexSet)
     {
         v->dist = INF;
         v->path = NULL;
     }
 
-    Vertex<T> *s = findVertex(origin);
+    Vertex *s = findVertex(origin);
     s->dist = 0;
     s->path = NULL;
 
-    MutablePriorityQueue<Vertex<T>> q;
+    MutablePriorityQueue<Vertex> q;
 
     q.insert(s);
 
     while(!q.empty())
     {
-        Vertex<T> *v = q.extractMin();
+        Vertex *v = q.extractMin();
         if(v->getInfo() == end)
             break;
         for(auto w: v->adj)
@@ -30,7 +27,7 @@ void Graph<T>::dijkstraShortestPath(const T &origin, const T &end) {
             if(w.dest->getDist() > v->getDist() + w.weight) {
                 w.dest->dist = v->getDist() + w.weight;
                 w.dest->path = v;
-                if (oldDist == INF)
+                if (oldDist == numeric_limits<double>::max())
                     q.insert(w.dest);
                 else
                     q.decreaseKey(w.dest);
@@ -39,10 +36,9 @@ void Graph<T>::dijkstraShortestPath(const T &origin, const T &end) {
     }
 }
 
-template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
-    vector<T> res;
-    Vertex<T> *d = findVertex(dest);
+vector<nodeInfo> Graph::getPath(const nodeInfo &origin, const nodeInfo &dest) const{
+    vector<nodeInfo> res;
+    Vertex *d = findVertex(dest);
     while(d->path != NULL) {
         res.push_back(d->getInfo());
         d = d->path;
@@ -52,10 +48,7 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
     return res;
 }
 
-template<class T>
-int Graph<T>::getCost(const T &dest) const{
-    Vertex<T> *destV = findVertex(dest);
+int Graph::getCost(const nodeInfo &dest) const{
+    Vertex *destV = findVertex(dest);
     return destV->getDist();
 }
-
-#endif

@@ -2,13 +2,13 @@
 #include <tuple>
 #include <dirent.h>
 #include "Graph.h"
+#include "GraphImporter.h"
 #include "MutablePriorityQueue.h"
 #include "Option.h"
 #include "Vehicle.h"
 #include "Menu.h"
-#include "GraphImporter.h"
 #include "GraphViewer/graphviewer.h"
-#include "Dijkstra.tpp"
+#include "Dijkstra.cpp"
 
 using namespace std;
 
@@ -16,12 +16,12 @@ GraphViewer *gv = new GraphViewer(600, 600, false);
 bool graphViewerLoaded = false;
 
 vector<Vehicle*> vehicles;
-Graph<nodeInfo> graph;
+Graph graph;
 
 void clearGraphViewer()
 {
     int i = 0;
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+    for (Vertex *v : graph.getVertexSet()) {
         gv->removeNode(v->getInfo().nodeID);
         for(int x = 0; x < v->getEdges().size(); x++)
         {
@@ -40,33 +40,19 @@ void displayMap()
         return;
     }
 
-    Vertex<nodeInfo> *firstVertex = graph.getVertexSet()[0];
+    Vertex *firstVertex = graph.getVertexSet()[0];
     int offsetX = firstVertex->getInfo().lat;
     int offsetY = firstVertex->getInfo().lon;
 
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
+    int i = 0;
+    for (Vertex *v : graph.getVertexSet()) {
         gv->addNode(v->getInfo().nodeID, v->getInfo().lat-offsetX, v->getInfo().lon-offsetY);
+        for (Edge e : v->getEdges()) {
+            gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
+        }
     }
 
     graphViewerLoaded = true;
-
-    int i = 0;
-    for (Vertex<nodeInfo> *v : graph.getVertexSet()) {
-        gv->addNode(v->getInfo().nodeID, v->getInfo().lat-527509, v->getInfo().lon-4556047);
-        for (Edge<nodeInfo> e : v->getEdges()) {
-            bool bidirect = false;
-            for(Edge<nodeInfo> e2 : e.getDest()->getEdges()) {
-                if(e2.getDest() == v) {
-                    bidirect = true;
-                    break;
-                }
-            }
-            if(bidirect)
-                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::UNDIRECTED);
-            else
-                gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
-        }
-    }
     gv->rearrange();
 }
 

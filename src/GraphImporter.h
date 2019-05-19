@@ -9,7 +9,7 @@
 
 #endif //CAL_PROJECT_GRAPHIMPORTER_H
 
-Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePath);
+Graph importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePath);
 
-void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile);
-void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile);
+void loadNodes(Graph &graph, ifstream &nodesFile);
+void loadEdges(Graph &graph, ifstream &edgesFile);

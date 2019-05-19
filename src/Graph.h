@@ -10,108 +10,33 @@
 #include <limits>
 #include <cmath>
 #include "MutablePriorityQueue.h"
+#include "Edge.h"
 
 using namespace std;
 
-template <class T> class Edge;
-template <class T> class Graph;
-template <class T> class Vertex;
-
-#define INF std::numeric_limits<double>::max()
-
-typedef struct nodeInfo {
-    int nodeID;
-    float lat;
-    float lon;
-    string tag;
-
-    nodeInfo(int ID) : nodeID(ID)
-    {
-        lat = 0;
-        lon = 0;
-        tag = "";
-    }
-
-    nodeInfo(){}
-
-    inline bool operator==(nodeInfo info) {
-        if (info.nodeID==nodeID)
-            return true;
-        else
-            return false;
-    }
-}nodeInfo;
-
-/************************* Vertex  **************************/
-
-template <class T>
-class Vertex {
-	T info;                // contents
-	vector<Edge<T> > adj;  // outgoing edges
-	bool visited;          // auxiliary field
-	double dist = 0;
-	Vertex<T> *path = NULL;
-	int queueIndex = 0; 		// required by MutablePriorityQueue
-
-	bool processing = false;
-	void addEdge(Vertex<T> *dest, double w);
-public:
-	Vertex(T in);
-	bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
-	T getInfo() const;
-	vector<Edge<T>> getEdges();
-	double getDist() const;
-	Vertex *getPath() const;
-	friend class Graph<T>;
-	friend class MutablePriorityQueue<Vertex<T>>;
-};
-
-#include "Vertex.tpp"
-
-/********************** Edge  ****************************/
-template <class T>
-class Edge {
-    Vertex<T> * dest;      // destination vertex
-    Vertex<T> * src;      // destination vertex
-    double weight;         // edge weight
-public:
-    Edge(Vertex<T> *d, double w);
-    Edge(Vertex<T> *d, Vertex<T>* s, double w);
-    friend class Graph<T>;
-    friend class Vertex<T>;
-    Vertex<T>* getDest();
-};
-
-#include "Edge.tpp"
-#include "GraphViewer/graphviewer.h"
+#define INF numeric_limits<double>::max();
 
 /*************************** Graph  **************************/
 
-template <class T>
 class Graph {
-	vector<Vertex<T> *> vertexSet;    // vertex set
+	vector<Vertex *> vertexSet;    // vertex set
 
 public:
-	Vertex<T> *findVertex(const T &in) const;
-	bool addVertex(const T &in);
-	bool addEdge(const T &sourc, const T &dest, double w);
+	Vertex *findVertex(const nodeInfo &in) const;
+	bool addVertex(const nodeInfo &in);
+	bool addEdge(const nodeInfo &sourc, const nodeInfo &dest, double w);
 	int getNumVertex() const;
-	vector<Vertex<T> *> getVertexSet() const;
+	vector<Vertex *> getVertexSet() const;
 
 
-	void dijkstraShortestPath(const T &s, const T &e);
-    void aStarShortestPath(const T &s, const T &e);
-    vector<vector<T>> nearestNeighbour(T startPoint, vector<T> points);
+	void dijkstraShortestPath(const nodeInfo &s, const nodeInfo &e);
+    void aStarShortestPath(const nodeInfo &s, const nodeInfo &e);
+    vector<vector<nodeInfo>> nearestNeighbour(nodeInfo startPoint, vector<nodeInfo> points);
 
-	vector<T> getPath(const T &origin, const T &dest) const;
-    int getCost(const T &dest) const;
+	vector<nodeInfo> getPath(const nodeInfo &origin, const nodeInfo &dest) const;
+    int getCost(const nodeInfo &dest) const;
     void clear();
 };
-
-#include "Graph.tpp"
-#include "Dijkstra.tpp"
-#include "A-star.tpp"
-#include "NearestNeighbour.tpp"
 
 /**************** Single Source Shortest Path algorithms ************/
 

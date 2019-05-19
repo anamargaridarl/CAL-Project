@@ -1,24 +1,28 @@
 #include <algorithm>
+#include "Graph.h"
 
-template<class T>
-void Graph<T>::aStarShortestPath(const T &origin, const T &end) {
+double cartesianDistance (nodeInfo* point1, const nodeInfo* point2) {
+    return (sqrt(pow(point1->lon-point2->lon,2)+pow(point1->lat-point2->lat,2)));
+}
+
+void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
     for(auto v: vertexSet)
     {
         v->dist = INF;
         v->path = NULL;
     }
 
-    Vertex<T> *s = findVertex(origin);
+    Vertex *s = findVertex(origin);
     s->dist = 0;
     s->path = NULL;
 
-    MutablePriorityQueue<Vertex<T>> q;
+    MutablePriorityQueue<Vertex> q;
 
     q.insert(s);
 
     while(!q.empty())
     {
-        Vertex<T> *v = q.extractMin();
+        Vertex *v = q.extractMin();
         if(v->getInfo() == end)
             break;
         for(auto w: v->adj)
@@ -28,17 +32,10 @@ void Graph<T>::aStarShortestPath(const T &origin, const T &end) {
                 w.dest->dist = v->getDist() + w.weight;
                 w.dest->path = v;
                 if (oldDist == INF)
-                    q.insert(w.dest+cartesianDistance(&v->getInfo(), &end));
+                    q.insert(w.dest);
                 else
-                    q.decreaseKey(w.dest+cartesianDistance(&v->getInfo(), &end));
+                    q.decreaseKey(w.dest);
             }
         }
     }
-}
-
-template<class T>
-double cartesianDistance (T* point1, const T* point2) {
-    nodeInfo* info1 = (nodeInfo*) point1;
-    nodeInfo* info2 = (nodeInfo*) point2;
-    return (sqrt(pow(info1->lon-info2->lon,2)+pow(info1->lat-info2->lat,2)));
 }

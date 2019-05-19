@@ -7,8 +7,8 @@
 
 using namespace std;
 
-Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePath) {
-    Graph<nodeInfo> graph;
+Graph importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePath) {
+    Graph graph;
 
     ifstream nodesFile(nodesFilePath);
     ifstream edgesFile(edgesFilePath);
@@ -26,7 +26,7 @@ Graph<nodeInfo> importGraph(string nodesFilePath, string edgesFilePath, string t
     return graph;
 }
 
-void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
+void loadNodes(Graph &graph, ifstream &nodesFile) {
     cout << "Loading nodes..." << endl;
     string line;
     getline(nodesFile, line);
@@ -52,13 +52,12 @@ void loadNodes(Graph<nodeInfo> &graph, ifstream &nodesFile) {
         info.nodeID = nodeID;
         info.lat = lat;
         info.lon = lon;
-        info.tag = "";
 
         graph.addVertex(info);
     }
 }
 
-void loadEdges(Graph<nodeInfo> &graph, ifstream &edgesFile) {
+void loadEdges(Graph &graph, ifstream &edgesFile) {
     cout << "Loading edges..." << endl;
     string line;
     getline(edgesFile, line);
