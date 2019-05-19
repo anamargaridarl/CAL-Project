@@ -40,6 +40,11 @@ typedef struct nodeInfo {
         else
             return false;
     }
+
+    inline double distance(nodeInfo node)
+    {
+        return sqrt(pow((lat - node.lat),2) + pow(lon - node.lon, 2));
+    }
 }nodeInfo;
 
 /************************* Vertex  **************************/
