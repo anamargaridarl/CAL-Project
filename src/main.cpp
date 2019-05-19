@@ -57,15 +57,29 @@ void displayMap()
     gv->rearrange();
 }
 
-void displayPath(nodeInfo start, nodeInfo end, vector<nodeInfo> path)
+void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
 {
     displayMap();
     for (int i = 1; i < path.size() - 1; i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
     }
     gv->setVertexColor(start.nodeID, "green");
-    gv->setVertexColor(end.nodeID, "red");
+    for(nodeInfo node : retrievalPoints)
+    {
+        gv->setVertexColor(node.nodeID, "red");
+    }
+    for(nodeInfo node : deliveries)
+    {
+        gv->setVertexColor(node.nodeID, "magenta");
+    }
     gv->rearrange();
+}
+
+void resetMapPath()
+{
+    for (Vertex *v : graph.getVertexSet()) {
+        gv->setVertexColor(v->getInfo().nodeID, "blue");
+    }
 }
 
 void loadChosenMap(string name)
@@ -73,6 +87,7 @@ void loadChosenMap(string name)
     if(graphViewerLoaded) clearGraphViewer();
     graph.clear();
     graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
+    displayMap();
 }
 
 void loadMapMenu()
@@ -91,7 +106,7 @@ void loadMapMenu()
         perror ("GraphFiles Directory not found!");
         return;
     }
-    options.push_back(new Option("View Loaded Map", displayMap));
+    //options.push_back(new Option("View Loaded Map", displayMap));
     Menu loadMapMenu("Choose Map to Load", options);
 
     loadMapMenu.run();
@@ -193,6 +208,7 @@ void createJourneyMenu()
         cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
         return;
     }
+    resetMapPath();
 
     const auto readPointID = [](int &id) {
         string userInput;
@@ -209,13 +225,13 @@ void createJourneyMenu()
             {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid Input!" << endl;
+                cout << "Invalid Input!\n Try again: " << flush;
                 continue;
             }
             invalidID = (graph.findVertex(id) == nullptr);
             if(invalidID)
             {
-                cout << "ERROR: Invalid Location!" << endl;
+                cout << "ERROR: Invalid Location!\n Try again: " << flush;
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
@@ -226,16 +242,8 @@ void createJourneyMenu()
     vector<Vertex*> vertexList;
 
     int startPointID = -1;
-    int finalPointID = -1;
     cout << "Insert ID of the start point for all Vehicles(! to cancel): " << flush;
     if(!readPointID(startPointID))
-    {
-        cout << "The trip has been Canceled!" << endl;
-        return;
-    }
-
-    cout << "TEMPORARY: Insert ID of the destination(! to cancel): " << flush;
-    if(!readPointID(finalPointID))
     {
         cout << "The trip has been Canceled!" << endl;
         return;
@@ -244,39 +252,39 @@ void createJourneyMenu()
     //Show the 2 points on the Map
 
     nodeInfo startPoint(startPointID);
-    nodeInfo endPoint(finalPointID);
     Vertex* startVertex = graph.findVertex(startPoint);
-    Vertex* endVertex = graph.findVertex(endPoint);
     vertexList.push_back(startVertex);
-    vertexList.push_back(endVertex);
 
-    /* USAR ISTO SÓ QND TIVERMOS Clarke e Wreight
     vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries;
+    vector<nodeInfo> allDeliveryPoints;
+    vector<nodeInfo> allRetrievalPoints;
     while(true)
     {
         int retrievalID = -1;
         cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
         if(!readPointID(retrievalID)) break;
         nodeInfo retrievalPoint(retrievalID);
+        vertexList.push_back(graph.findVertex(retrievalPoint));
 
         vector<nodeInfo> deliveryPoints;
-        bool insertingDelivery = true;
-        while(insertingDelivery) {
+        while(true) {
             int deliveryID = -1;
             cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
-            if(!readPointID(deliveryID)) insertingDelivery = false;
+            if(!readPointID(deliveryID)) break;
             nodeInfo deliveryPoint(deliveryID);
             deliveryPoints.push_back(deliveryPoint);
+            vertexList.push_back(graph.findVertex(deliveryPoint));
         }
 
         //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
         //Check if there is still merch which has not been delivered (When weights are added)
 
         //Insert the retrieval and it's delivery list into the List of PoI
+        allDeliveryPoints.insert(allDeliveryPoints.begin(), deliveryPoints.begin(), deliveryPoints.end());
+        allRetrievalPoints.push_back(retrievalPoint);
         tuple<nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
         deliveries.push_back(delivery);
     }
-    */
 
     graph.dfs(startVertex);
     bool possible = true;
@@ -291,10 +299,13 @@ void createJourneyMenu()
     graph.clearVisitedVertexes();
     if(!possible) return;
 
-    //TEMPORARY Dijkstra
+    vector<nodeInfo> path = graph.nearestNeighbour(startPoint, deliveries);
+    displayPath(startPoint, allRetrievalPoints, allDeliveryPoints, path);
+
+    /*//TEMPORARY Dijkstra
     graph.dijkstraShortestPath(startPoint, endPoint);
     vector<nodeInfo> path = graph.getPath(startPoint, endPoint);
-    displayPath(startPoint, endPoint, path);
+    displayPath(startPoint, endPoint, path);*/
 }
 
 void mainMenu()

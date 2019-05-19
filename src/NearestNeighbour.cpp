@@ -104,15 +104,18 @@ vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<node
 
     while(!pointsAvailableAtStart.empty())
     {
-        tuple<nodeInfo, vector<nodeInfo>> startPath = getShortestPath(currentPosition, pointsAvailableAtStart);
+        tuple<nodeInfo, vector<nodeInfo>> shortestPath = getShortestPath(currentPosition, pointsAvailableAtStart);
 
-        route.insert(route.end(), get<1>(startPath).begin(), get<1>(startPath).end());
-        currentPosition = get<0>(startPath);
+        route.insert(route.end(), get<1>(shortestPath).begin(), get<1>(shortestPath).end());
+        currentPosition = get<0>(shortestPath);
 
         pointsAvailableAtStart.erase(find(pointsAvailableAtStart.begin(), pointsAvailableAtStart.end(), currentPosition));
         vector<nodeInfo> newPoints = getDeliveryPoints(currentPosition, deliveries);
         pointsAvailableAtStart.insert(pointsAvailableAtStart.end(), newPoints.begin(), newPoints.end());
     }
+    dijkstraShortestPath(currentPosition, startPoint);
+    vector<nodeInfo> finalPath = getPath(currentPosition, startPoint);
+    route.insert(route.end(), finalPath.begin(), finalPath.end());
 
     return route;
 }
