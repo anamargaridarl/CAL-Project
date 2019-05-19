@@ -4,7 +4,12 @@ project(Project)
 set(CMAKE_CXX_STANDARD 11)
 
 add_executable(Project src/main.cpp
+        src/Graph.cpp
         src/Graph.h
+        src/Vertex.cpp
+        src/Vertex.h
+        src/Edge.cpp
+        src/Edge.h
         src/MutablePriorityQueue.h
         src/Option.cpp
         src/Option.h
@@ -19,5 +24,5 @@ add_executable(Project src/main.cpp
         src/GraphViewer/connection.cpp
         src/GraphViewer/edgetype.h
         src/GraphViewer/graphviewer.h
-        src/GraphViewer/graphviewer.cpp src/A-star.tpp src/Vertex.h src/Edge.h)
+        src/GraphViewer/graphviewer.cpp src/A-star.tpp)
 

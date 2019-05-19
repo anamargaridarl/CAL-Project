@@ -10,7 +10,7 @@
 #include <limits>
 #include <cmath>
 #include "MutablePriorityQueue.h"
-#include "Edge.h"
+#include "Vertex.h"
 
 using namespace std;
 

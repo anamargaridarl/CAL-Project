@@ -2,10 +2,10 @@
 #define CAL_PROJECT_VERTEX_H
 
 #include <vector>
+#include "Edge.h"
+#include "MutablePriorityQueue.h"
 
 using namespace std;
-
-class Edge;
 
 typedef struct nodeInfo {
     int nodeID;

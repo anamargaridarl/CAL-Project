@@ -33,7 +33,6 @@ bool Graph::addVertex(const nodeInfo &in) {
 /*
  * Clears the Graph's information
  */
-template <class T>
 void Graph::clear() {
     for(Vertex* vertex : vertexSet)
     {
@@ -48,7 +47,6 @@ void Graph::clear() {
  * destination vertices and the edge weight (w).
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
-template <class T>
 bool Graph::addEdge(const nodeInfo &sourc, const nodeInfo &dest, double w) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
