@@ -41,9 +41,12 @@ vector<nodeInfo> getNearestPoints(nodeInfo start, vector<nodeInfo> allPoints)
 
 double Graph::getPathCost(vector<nodeInfo> path) {
     double cost = 0;
-    for(nodeInfo node : path)
+    for(int i = 0; i < path.size() - 1; i++)
     {
-        cost += getCost(node);
+        Vertex* v1 = findVertex(path[i]);
+        Vertex* v2 = findVertex(path[i+1]);
+
+        cost += v1->getEdge(v2).weight;
     }
     return cost;
 }
@@ -117,5 +120,98 @@ vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<node
     vector<nodeInfo> finalPath = getPath(currentPosition, startPoint);
     route.insert(route.end(), finalPath.begin(), finalPath.end());
 
-    return route;
+    return twoOpt(route, deliveries);
+}
+
+bool checkValidOrder(vector<nodeInfo> path, vector<tuple<nodeInfo, vector<nodeInfo>>> pointsOfInterest)
+{
+    vector<nodeInfo> retrievals;
+    vector<nodeInfo> others;
+    for(tuple<nodeInfo, vector<nodeInfo>> combo : pointsOfInterest)
+    {
+        retrievals.push_back(get<0>(combo));
+    }
+
+    for(nodeInfo node : path)
+    {
+        auto it = find(retrievals.begin(), retrievals.end(), node);
+        if(it != retrievals.end())
+        {
+            long index = std::distance(retrievals.begin(), it);
+            vector<nodeInfo> deliveries = get<1>(pointsOfInterest[index]);
+            for(nodeInfo delivery : deliveries)
+                if(find(others.begin(), others.end(), delivery) != others.end()) return false;
+        }
+        else others.push_back(node);
+    }
+
+    return true;
+}
+
+bool Graph::checkValidPath(vector<nodeInfo> path, double &previousCost)
+{
+    double cost = 0;
+    for(int i = 0; i < path.size() - 1; i++)
+    {
+        Vertex* v1 = findVertex(path[i]);
+        Vertex* v2 = findVertex(path[i+1]);
+
+        if(v1->getEdge(v2).dest == nullptr)
+            return false;
+
+        cost += v1->getEdge(v2).weight;
+    }
+    if(cost < previousCost)
+    {
+        previousCost = cost;
+        return true;
+    }
+    else return false;
+}
+
+vector<nodeInfo> Graph::twoOpt(vector<nodeInfo> currentPath, vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries)
+{
+    size_t numberOfNodes = currentPath.size();
+    double minCost = getPathCost(currentPath);
+    bool tryAgain;
+
+    do {
+        tryAgain = false;
+        for(int i = 0; i < numberOfNodes; i++)
+        {
+            for(int j = i+1; j < numberOfNodes-1; j++)
+            {
+                vector<nodeInfo> tmpPath;
+                twoOptSwap(i, j, tmpPath, currentPath);
+                if(checkValidOrder(tmpPath, deliveries) && checkValidPath(tmpPath, minCost))
+                {
+                    currentPath = tmpPath;
+                    tryAgain = true;
+                    break;
+                }
+            }
+            if(tryAgain) break;
+        }
+    } while(tryAgain);
+
+    return currentPath;
+}
+
+void Graph::twoOptSwap(int i, int j, vector<nodeInfo> &tmpPath, vector<nodeInfo> currentPath)
+{
+    //add from route[0] to route[i-1]
+    for ( int x = 0; x <= i - 1; x++)
+    {
+        tmpPath.push_back(currentPath[x]);
+    }
+    //add from route[i] to route[j] in reverse order
+    for ( int x = j; x >= i; x--)
+    {
+        tmpPath.push_back(currentPath[x]);
+    }
+    //add from route[j+1] to end
+    for ( int x = j + 1; x < currentPath.size(); x++)
+    {
+        tmpPath.push_back(currentPath[x]);
+    }
 }

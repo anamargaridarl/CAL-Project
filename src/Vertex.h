@@ -56,6 +56,7 @@ public:
     friend class Graph;
     friend class MutablePriorityQueue<Vertex>;
     bool isVisited();
+    Edge getEdge(Vertex* dest);
 };
 
 #endif //CAL_PROJECT_VERTEX_H

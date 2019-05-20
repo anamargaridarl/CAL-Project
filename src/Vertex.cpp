@@ -29,3 +29,14 @@ Vertex *Vertex::getPath() const {
 bool Vertex::isVisited() {
     return visited;
 }
+
+Edge Vertex::getEdge(Vertex *dest) {
+    for(Edge edge : adj)
+    {
+        if(edge.dest == dest)
+        {
+            return edge;
+        }
+    }
+    return {nullptr,0};
+}

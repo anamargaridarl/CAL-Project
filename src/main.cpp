@@ -88,7 +88,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
 }
 
 void resetMapPath()
-{
+{ //TODO: Needs to reset edge color too!!!
     for (Vertex *v : graph.getVertexSet()) {
         gv->setVertexColor(v->getInfo().nodeID, "blue");
     }
@@ -118,7 +118,6 @@ void loadMapMenu()
         perror ("GraphFiles Directory not found!");
         return;
     }
-    //options.push_back(new Option("View Loaded Map", displayMap));
     Menu loadMapMenu("Choose Map to Load", options);
 
     loadMapMenu.run();
