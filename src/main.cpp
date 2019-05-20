@@ -19,6 +19,18 @@ bool graphViewerLoaded = false;
 vector<Vehicle*> vehicles;
 Graph graph;
 
+long int hashIdPair(long int id1, long int id2) {
+    return (long int)(0.5*(id1+id2)*(id1+id2+1)+id2);
+}
+
+pair<long int, long int> dehashIdPair(long int hash) {
+    double w = floor((sqrt(8 * hash + 1) - 1)/2);
+    double t = (w*w+w)/2;
+    long int y = (long int)(hash-t);
+    long int x = (long int)(w-y);
+    return make_pair(x,y);
+}
+
 void clearGraphViewer()
 {
     int i = 0;
@@ -45,11 +57,10 @@ void displayMap()
     int offsetX = firstVertex->getInfo().lat;
     int offsetY = firstVertex->getInfo().lon;
 
-    int i = 0;
     for (Vertex *v : graph.getVertexSet()) {
         gv->addNode(v->getInfo().nodeID, v->getInfo().lat-offsetX, v->getInfo().lon-offsetY);
         for (Edge e : v->getEdges()) {
-            gv->addEdge(i++,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
+            gv->addEdge(v->getInfo().nodeID*1000000000+e.getDest()->getInfo().nodeID,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
         }
     }
 
@@ -60,8 +71,9 @@ void displayMap()
 void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
 {
     displayMap();
-    for (int i = 1; i < path.size() - 1; i++) {
+    for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
+        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "red");
     }
     gv->setVertexColor(start.nodeID, "green");
     for(nodeInfo node : retrievalPoints)
