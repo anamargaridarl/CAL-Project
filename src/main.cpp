@@ -281,9 +281,13 @@ void createJourneyMenu()
         vector<nodeInfo> deliveryPoints;
         while(true) {
             int deliveryID = -1;
+            int quantity = 0;
             cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
             if(!readPointID(deliveryID)) break;
+            cout << "Insert quantity of goods" << endl;
+            cin>> quantity;
             nodeInfo deliveryPoint(deliveryID);
+            deliveryPoint.setQuantity(quantity);
             deliveryPoints.push_back(deliveryPoint);
             vertexList.push_back(graph.findVertex(deliveryPoint));
         }

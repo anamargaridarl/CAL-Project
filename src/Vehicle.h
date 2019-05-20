@@ -15,10 +15,12 @@ class Vehicle {
 public:
     Vehicle(unsigned int capacity, merchType typeOfMerch);
     std::string getInfo();
+    int getCapacity();
 
 private:
     unsigned int capacity;
     merchType typeOfMerch;
+
 };
 
 

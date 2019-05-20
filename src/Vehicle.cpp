@@ -7,3 +7,8 @@ Vehicle::Vehicle(unsigned int capacity, merchType typeOfMerch) : capacity(capaci
 std::string Vehicle::getInfo() {
     return "Capacity: " +  to_string(capacity) + ", Can carry: " + merchTypeString[typeOfMerch];
 }
+
+int Vehicle::getCapacity() {
+    return capacity;
+}
+

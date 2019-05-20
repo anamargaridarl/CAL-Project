@@ -12,11 +12,13 @@ typedef struct nodeInfo {
     int nodeID;
     float lat;
     float lon;
+    int quantity = 0;
 
     nodeInfo(int ID) : nodeID(ID)
     {
         lat = 0;
         lon = 0;
+        quantity = 0;
     }
 
     nodeInfo(){}
@@ -32,6 +34,12 @@ typedef struct nodeInfo {
     {
         return sqrt(pow((lat - node.lat),2) + pow(lon - node.lon, 2));
     }
+
+    void setQuantity(int value)
+    {
+        quantity = value;
+    }
+
 } nodeInfo;
 
 /************************* Vertex  **************************/
