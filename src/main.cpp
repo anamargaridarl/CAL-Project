@@ -18,6 +18,7 @@ bool graphViewerLoaded = false;
 
 vector<Vehicle*> vehicles;
 Graph graph;
+vector<nodeInfo> currentPath;
 
 long int hashIdPair(long int id1, long int id2) {
     return (long int)(0.5*(id1+id2)*(id1+id2+1)+id2);
@@ -68,9 +69,16 @@ void displayMap()
     gv->rearrange();
 }
 
+void clearPreviousPath() {
+    for (int i = 0; i < currentPath.size(); i++) {
+        gv->setVertexColor(currentPath[i].nodeID, "blue");
+        gv->setEdgeColor(currentPath[i-1].nodeID*1000000000+currentPath[i].nodeID, "black");
+    }
+}
+
 void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
 {
-    displayMap();
+    currentPath = path;
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
         gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "red");
@@ -365,6 +373,7 @@ void createJourneyMenu() {
 */
 
         vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths.at(vehicleDisplay).second);
+        clearPreviousPath();
         displayPath(startPoint, ret, del, path);
 
     }
