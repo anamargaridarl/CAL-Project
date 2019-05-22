@@ -12,3 +12,11 @@ int Vehicle::getCapacity() {
     return capacity;
 }
 
+int Vehicle::setCapacity(int c) {
+    capacity = c;
+}
+
+int Vehicle::getID() {
+    return id;
+}
+

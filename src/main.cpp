@@ -9,7 +9,7 @@
 #include "Menu.h"
 #include "GraphViewer/graphviewer.h"
 #include "Dijkstra.cpp"
-
+#include "DivideVehicles.h"
 
 using namespace std;
 
@@ -291,6 +291,8 @@ void createJourneyMenu()
             deliveryPoints.push_back(deliveryPoint);
             vertexList.push_back(graph.findVertex(deliveryPoint));
         }
+
+        vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> paths = divideVehicles(vehicles, deliveries);
 
         //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
         //Check if there is still merch which has not been delivered (When weights are added)
