@@ -292,12 +292,13 @@ void createJourneyMenu()
             vertexList.push_back(graph.findVertex(deliveryPoint));
         }
 
-        vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> paths = divideVehicles(vehicles, deliveries);
 
         //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
         //Check if there is still merch which has not been delivered (When weights are added)
 
         //Insert the retrieval and it's delivery list into the List of PoI
+
+
         allDeliveryPoints.insert(allDeliveryPoints.begin(), deliveryPoints.begin(), deliveryPoints.end());
         allRetrievalPoints.push_back(retrievalPoint);
         tuple<nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
