@@ -2,7 +2,13 @@
 
 using namespace std;
 
-Vehicle::Vehicle(unsigned int capacity, merchType typeOfMerch) : capacity(capacity), typeOfMerch(typeOfMerch) {}
+int i = 0;
+
+Vehicle::Vehicle(unsigned int capacity, merchType typeOfMerch) : capacity(capacity), typeOfMerch(typeOfMerch) {
+    id = i;
+    printf("%d\n", id);
+    i++;
+}
 
 std::string Vehicle::getInfo() {
     return "Capacity: " +  to_string(capacity) + ", Can carry: " + merchTypeString[typeOfMerch];

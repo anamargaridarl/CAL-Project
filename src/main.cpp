@@ -318,8 +318,49 @@ void createJourneyMenu()
     graph.clearVisitedVertexes();
     if(!possible) return;
 
-    vector<nodeInfo> path = graph.nearestNeighbour(startPoint, deliveries);
-    displayPath(startPoint, allRetrievalPoints, allDeliveryPoints, path);
+    vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> paths = divideVehicles(vehicles, deliveries);
+
+
+    for(pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>> meias: paths)
+    {
+        vector<tuple<nodeInfo, vector<nodeInfo>>> batatas = meias.second;
+        cout << "veiculo 1 "<< endl;
+        for(tuple<nodeInfo, vector<nodeInfo>> bananas: batatas)
+        {
+            cout << "node recolha" << get<0>(bananas).nodeID << endl;
+
+            vector<nodeInfo> coubes = get<1>(bananas);
+            for(nodeInfo cobes:coubes )
+            {
+                cout << "nodes " << cobes.nodeID << endl;
+                cout << "nodes end " << endl;
+
+            }
+
+
+        }
+
+    }
+
+    vector<nodeInfo> s;
+    vector<nodeInfo> retrivals;
+    //RetrivalPoints
+    for(tuple<nodeInfo, vector<nodeInfo>> oi: paths.at(0).second)
+    {
+        for(nodeInfo n: get<1>(oi)) {
+            s.push_back(n);
+        }
+
+        retrivals.push_back(get<0>(oi));
+
+
+    }
+
+
+
+    vector<nodeInfo> path = graph.nearestNeighbour(startPoint, paths.at(0).second);
+    displayPath(startPoint, retrivals, s , path);
+
 
     /*//TEMPORARY Dijkstra
     graph.dijkstraShortestPath(startPoint, endPoint);
