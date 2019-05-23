@@ -18,6 +18,7 @@ class Vehicle {
 public:
     Vehicle(unsigned int specialization);
     std::string getInfo();
+    std::string getType();
     int getCapacity();
     int setCapacity(int c);
     int getID();

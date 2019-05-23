@@ -41,3 +41,7 @@ int Vehicle::setCapacity(int c) {
 int Vehicle::getID() {
     return id;
 }
+
+std::string Vehicle::getType() {
+    return merchTypeString[typeOfMerch];
+}

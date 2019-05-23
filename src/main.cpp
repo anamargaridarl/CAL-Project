@@ -351,25 +351,43 @@ void createJourneyMenu() {
     if (!possible) return;
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > paths = divideVehicles(vehicles, deliveries[0]);
+            vector < nodeInfo >> >> > moneyPaths = divideVehicles(vehicles, deliveries[0]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > artPaths = divideVehicles(vehicles, deliveries[1]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > lovePaths = divideVehicles(vehicles, deliveries[2]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > paths[3] = {moneyPaths, artPaths, lovePaths};
 
     int vehicleDisplay = 0;
     int flagDisplay = 1;
 
     while (flagDisplay) {
+        cout << "0: Exit" << endl;
 
-        for (int i = 1; i <= paths.size(); i++) {
-
-            cout << i << ".Vehicle" << i << endl;
-
+        for (int i = 0; i < 3; i++) {
+            for(int j = 1; j <= paths[i].size(); j++)
+            cout << j << ": Display " << (paths[i][j-1].first)->getType() << " Vehicle " << j << endl;
         }
-
-        cout << "0. Exit" << endl;
 
         cin >> vehicleDisplay;//TODO: handle errors
 
         if(vehicleDisplay == 0)
             break;
+
+        int j = vehicleDisplay;
+        int row = 0;
+        for(int i = 0; i < 3; i++)
+        {
+            if(j - paths[i].size() <= 0)
+            {
+                row = i;
+                break;
+            }
+        }
 
         vehicleDisplay--;
 
@@ -379,7 +397,7 @@ void createJourneyMenu() {
         del.clear();
         ret.clear();
 
-        for (tuple <nodeInfo, vector<nodeInfo>> request: paths.at(vehicleDisplay).second) {
+        for (tuple <nodeInfo, vector<nodeInfo>> request: paths[row].at(vehicleDisplay).second) {
             for (nodeInfo n: get<1>(request)) {
                 del.push_back(n);
             }
@@ -405,7 +423,7 @@ void createJourneyMenu() {
         }
 */
 
-        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths.at(vehicleDisplay).second);
+        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(vehicleDisplay).second);
         clearPreviousPath();
         displayPath(startPoint, ret, del, path);
 
