@@ -366,11 +366,16 @@ void createJourneyMenu() {
     int flagDisplay = 1;
 
     while (flagDisplay) {
+        cout << "\nChoose an option: " << endl;
         cout << "0: Exit" << endl;
 
+        int y = 1;
         for (int i = 0; i < 3; i++) {
             for(int j = 1; j <= paths[i].size(); j++)
-            cout << j << ": Display " << (paths[i][j-1].first)->getType() << " Vehicle " << j << endl;
+            {
+                cout << y << ": Display Path of " << (paths[i][j-1].first)->getType() << " Vehicle nº " << j << endl;
+                y++;
+            }
         }
 
         cin >> vehicleDisplay;//TODO: handle errors
@@ -378,11 +383,13 @@ void createJourneyMenu() {
         if(vehicleDisplay == 0)
             break;
 
-        int j = vehicleDisplay;
+        int x = vehicleDisplay;
         int row = 0;
+        int choice;
         for(int i = 0; i < 3; i++)
         {
-            if(j - paths[i].size() <= 0)
+            choice = x - 1;
+            if((x -= paths[i].size()) <= 0)
             {
                 row = i;
                 break;
@@ -397,7 +404,7 @@ void createJourneyMenu() {
         del.clear();
         ret.clear();
 
-        for (tuple <nodeInfo, vector<nodeInfo>> request: paths[row].at(vehicleDisplay).second) {
+        for (tuple <nodeInfo, vector<nodeInfo>> request: paths[row].at(choice).second) {
             for (nodeInfo n: get<1>(request)) {
                 del.push_back(n);
             }
@@ -423,7 +430,7 @@ void createJourneyMenu() {
         */
 
 
-        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(vehicleDisplay).second);
+        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(choice).second);
         clearPreviousPath();
         displayPath(startPoint, ret, del, path);
 
