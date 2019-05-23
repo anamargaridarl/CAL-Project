@@ -148,22 +148,32 @@ void loadMapMenu()
 
 void vehicleCreation()
 {
-    unsigned int capacity;
+    unsigned int specialization;
     cout << "----Vehicle Creation----" << endl;
 
-    cout << "-Insert Vehicle Capacity: ";
-    while(!(cin >> capacity))
+    cout << "Insert Vehicle Specialization: ";
+    cout << "1.Money " << endl;
+    cout << "2.Art " << endl;
+    cout << "3.Love " << endl;
+
+    while(!(cin >> specialization))
     {
-        cout << "Invalid Capacity!" << endl;
+        cout << "Invalid Specialization!" << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Insert Vehicle Capacity: ";
+        cout << "Insert Vehicle Specialization: ";
+        cout << "1.Money " << endl;
+        cout << "2.Art " << endl;
+        cout << "3.Love " << endl;
     }
     cout << endl;
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    Vehicle* v = new Vehicle(capacity, Love);
+
+    Vehicle* v = new Vehicle(specialization);
+
+
 
     vehicles.push_back(v);
 }
