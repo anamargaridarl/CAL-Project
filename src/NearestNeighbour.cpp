@@ -46,7 +46,12 @@ double Graph::getPathCost(vector<nodeInfo> path) {
         Vertex* v1 = findVertex(path[i]);
         Vertex* v2 = findVertex(path[i+1]);
 
-        cost += v1->getEdge(v2).weight;
+        if(v1->getEdge(v2).dest == nullptr)
+        {
+            cost = INF;
+            break;
+        }
+        else cost += v1->getEdge(v2).weight;
     }
     return cost;
 }
@@ -177,13 +182,14 @@ vector<nodeInfo> Graph::twoOpt(vector<nodeInfo> currentPath, vector<tuple<nodeIn
 
     do {
         tryAgain = false;
-        for(int i = 0; i < numberOfNodes; i++)
+        for(int i = 1; i < numberOfNodes - 1; i++)
         {
-            for(int j = i+1; j < numberOfNodes-1; j++)
+            for(int j = i+1; j < numberOfNodes-2; j++)
             {
                 vector<nodeInfo> tmpPath;
                 twoOptSwap(i, j, tmpPath, currentPath);
-                if(checkValidOrder(tmpPath, deliveries) && checkValidPath(tmpPath, minCost))
+                if(!checkValidOrder(tmpPath, deliveries)) break;
+                if(checkValidPath(tmpPath, minCost))
                 {
                     currentPath = tmpPath;
                     tryAgain = true;
@@ -200,7 +206,7 @@ vector<nodeInfo> Graph::twoOpt(vector<nodeInfo> currentPath, vector<tuple<nodeIn
 void Graph::twoOptSwap(int i, int j, vector<nodeInfo> &tmpPath, vector<nodeInfo> currentPath)
 {
     //add from route[0] to route[i-1]
-    for ( int x = 0; x <= i - 1; x++)
+    for ( int x = 0; x < i; x++)
     {
         tmpPath.push_back(currentPath[x]);
     }

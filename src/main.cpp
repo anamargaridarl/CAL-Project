@@ -73,7 +73,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
     displayMap();
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
-        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "red");
+        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "yellow");
     }
     gv->setVertexColor(start.nodeID, "green");
     for(nodeInfo node : retrievalPoints)
