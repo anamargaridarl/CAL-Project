@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include <tuple>
+#include <algorithm>
 
 int Graph::getNumVertex() const {
     return vertexSet.size();
@@ -87,3 +88,22 @@ void Graph::clearVisitedVertexes() {
         v->visited = false;
     }
 }
+
+vector<nodeInfo> Graph::getPath(const nodeInfo &origin, const nodeInfo &dest) const{
+    vector<nodeInfo> res;
+    Vertex *d = findVertex(dest);
+    while(d->path != NULL) {
+        res.push_back(d->getInfo());
+        d = d->path;
+    }
+    res.push_back(origin);
+    reverse(res.begin(),res.end());
+    return res;
+}
+
+double Graph::getCost(const nodeInfo &dest) const{
+    Vertex *destV = findVertex(dest);
+    return destV->getDist();
+}
+
+

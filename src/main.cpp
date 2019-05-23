@@ -108,6 +108,8 @@ void loadChosenMap(string name)
     graph.clear();
     graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
     displayMap();
+    /*graph.dijkstraShortestPath(nodeInfo(1108123561),nodeInfo(311887395));
+    cout << graph.findVertex(nodeInfo(311887395))->getDist() << endl;*/
 }
 
 void loadMapMenu()

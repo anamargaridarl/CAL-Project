@@ -51,6 +51,7 @@ class Vertex {
     double dist = 0;
     Vertex *path = NULL;
     int queueIndex = 0; 		// required by MutablePriorityQueue
+    int queueValue = 0;
 
     bool processing = false;
     void addEdge(Vertex *dest, double w);
@@ -62,7 +63,7 @@ public:
     double getDist() const;
     Vertex *getPath() const;
     friend class Graph;
-    friend class MutablePriorityQueue<Vertex>;
+    friend class MutablePriorityQueue;
     bool isVisited();
     Edge getEdge(Vertex* dest);
 };
