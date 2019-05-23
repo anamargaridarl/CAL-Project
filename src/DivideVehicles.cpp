@@ -48,8 +48,8 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
     }
 
 
-    for (Vehicle* v : v) {
-        totalVehicleWeight += v->getCapacity();
+    for (Vehicle* vehicle : v) {
+        totalVehicleWeight += vehicle->getCapacity();
     }
 
     if (totalVehicleWeight < totalWeight) {

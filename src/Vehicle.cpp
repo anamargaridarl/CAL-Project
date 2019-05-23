@@ -6,17 +6,17 @@ int i = 0;
 
 Vehicle::Vehicle(unsigned int specialization) {
 
-    if(specialization == 1)
+    if(specialization == 0)
     {
         capacity = 100;
         typeOfMerch = Money;
     }
-    else if(specialization == 2)
+    else if(specialization == 1)
     {
         capacity = 500;
         typeOfMerch = Art;
     }
-    else if(specialization == 3)
+    else if(specialization == 2)
     {
         capacity = 50;
         typeOfMerch = Love;
@@ -41,4 +41,3 @@ int Vehicle::setCapacity(int c) {
 int Vehicle::getID() {
     return id;
 }
-

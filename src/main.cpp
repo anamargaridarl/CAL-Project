@@ -151,12 +151,12 @@ void vehicleCreation()
     unsigned int specialization;
     cout << "----Vehicle Creation----" << endl;
 
-    cout << "Insert Vehicle Specialization: ";
-    cout << "1.Money " << endl;
-    cout << "2.Art " << endl;
-    cout << "3.Love " << endl;
+    cout << "Insert Vehicle Specialization: " << endl;
+    cout << "0: Money " << endl;
+    cout << "1: Art " << endl;
+    cout << "2: Love " << endl;
 
-    while(!(cin >> specialization))
+    while(!(cin >> specialization) || specialization > 2 || specialization < 0)
     {
         cout << "Invalid Specialization!" << endl;
         cin.clear();
@@ -282,13 +282,34 @@ void createJourneyMenu() {
     Vertex *startVertex = graph.findVertex(startPoint);
     vertexList.push_back(startVertex);
 
-    vector < tuple < nodeInfo, vector < nodeInfo >> > deliveries;
+    vector < tuple < nodeInfo, vector < nodeInfo >> > deliveries[3];
     vector <nodeInfo> allDeliveryPoints;
     vector <nodeInfo> allRetrievalPoints;
     while (true) {
         int retrievalID = -1;
         cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
         if (!readPointID(retrievalID)) break;
+
+        int specialization = -1;
+        cout << "Insert the type of Merch: " << endl;
+        cout << "0: Money " << endl;
+        cout << "1: Art " << endl;
+        cout << "2: Love " << endl;
+
+        while(!(cin >> specialization) || specialization > 2|| specialization < 0)
+        {
+            cout << "Invalid Merch Type!" << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Insert the type of Merch: " << endl;
+            cout << "0: Money " << endl;
+            cout << "1: Art " << endl;
+            cout << "2: Love " << endl;
+        }
+        cout << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         nodeInfo retrievalPoint(retrievalID);
         vertexList.push_back(graph.findVertex(retrievalPoint));
 
@@ -315,7 +336,7 @@ void createJourneyMenu() {
         allDeliveryPoints.insert(allDeliveryPoints.begin(), deliveryPoints.begin(), deliveryPoints.end());
         allRetrievalPoints.push_back(retrievalPoint);
         tuple <nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
-        deliveries.push_back(delivery);
+        deliveries[specialization].push_back(delivery);
     }
 
     graph.dfs(startVertex);
@@ -330,7 +351,7 @@ void createJourneyMenu() {
     if (!possible) return;
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > paths = divideVehicles(vehicles, deliveries);
+            vector < nodeInfo >> >> > paths = divideVehicles(vehicles, deliveries[0]);
 
     int vehicleDisplay = 0;
     int flagDisplay = 1;
