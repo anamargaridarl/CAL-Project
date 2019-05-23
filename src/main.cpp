@@ -225,6 +225,10 @@ void createJourneyMenu() {
         cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
         return;
     }
+    if (vehicles.empty()) {
+        cout << "There are no Vehicles in your fleet!\n    Please Create your vehicles first!" << endl;
+        return;
+    }
     resetMapPath();
 
     const auto readPointID = [](int &id) {
@@ -262,7 +266,7 @@ void createJourneyMenu() {
         return;
     }
 
-    //Show the 2 points on the Map
+    //TODO Show the 2 points on the Map
 
     nodeInfo startPoint(startPointID);
     Vertex *startVertex = graph.findVertex(startPoint);
@@ -292,12 +296,11 @@ void createJourneyMenu() {
             vertexList.push_back(graph.findVertex(deliveryPoint));
         }
 
-
-        //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
-        //Check if there is still merch which has not been delivered (When weights are added)
-
-        //Insert the retrieval and it's delivery list into the List of PoI
-
+        if(deliveryPoints.empty())
+        {
+            cout << "Retrieval point had no deliveries so it was ignored!" << endl;
+            continue;
+        }
 
         allDeliveryPoints.insert(allDeliveryPoints.begin(), deliveryPoints.begin(), deliveryPoints.end());
         allRetrievalPoints.push_back(retrievalPoint);
