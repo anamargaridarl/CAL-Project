@@ -16,7 +16,7 @@ static std::string merchTypeString[] = {"Money", "Art", "Love"};
 
 class Vehicle {
 public:
-    Vehicle(unsigned int capacity, merchType typeOfMerch);
+    Vehicle(unsigned int specialization);
     std::string getInfo();
     int getCapacity();
     int setCapacity(int c);
