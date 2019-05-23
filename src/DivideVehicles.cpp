@@ -84,7 +84,6 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
         }
 
 
-        cout << "popo "<< endl;
 
         vector<tuple<nodeInfo, vector<nodeInfo>>> deliveriesInVehicle;
 
@@ -95,11 +94,8 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
 
 
 
-        cout << "ola "<< endl;
         deliveriesInVehicle.push_back(deliveries[i]);
         finalPaths.push_back(make_pair(aux[bi],deliveriesInVehicle));
-
-        cout << "adeus "<< endl;
 
 
     }
