@@ -18,7 +18,7 @@ Vehicle::Vehicle(unsigned int specialization) {
     }
     else if(specialization == 3)
     {
-        capacity = 50;
+        capacity = 40;
         typeOfMerch = Love;
     }
 

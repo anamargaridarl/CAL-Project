@@ -362,7 +362,7 @@ void createJourneyMenu() {
             ret.push_back(get<0>(request));
         }
 
-        /* testes
+/*testes
         for(pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>> meias: paths) {
             vector < tuple < nodeInfo, vector < nodeInfo >> > batatas = meias.second;
             cout << "veiculo 1 " << endl;
@@ -376,10 +376,10 @@ void createJourneyMenu() {
 
                 }
 
-
             }
         }
-*/
+        */
+
 
         vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths.at(vehicleDisplay).second);
         clearPreviousPath();

@@ -83,19 +83,27 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
             }
         }
 
+
+        cout << "popo "<< endl;
+
         vector<tuple<nodeInfo, vector<nodeInfo>>> deliveriesInVehicle;
 
         if (index != -1) {
-            deliveriesInVehicle = finalPaths.at(i).second;
+            deliveriesInVehicle = finalPaths.at(index).second;
             finalPaths.erase(finalPaths.begin() + index);
         }
 
 
+
+        cout << "ola "<< endl;
         deliveriesInVehicle.push_back(deliveries[i]);
         finalPaths.push_back(make_pair(aux[bi],deliveriesInVehicle));
 
+        cout << "adeus "<< endl;
+
 
     }
+
 
     return finalPaths;
 }
