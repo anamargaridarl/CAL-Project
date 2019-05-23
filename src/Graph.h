@@ -24,7 +24,7 @@ class Graph {
 
     void dfsVisit(Vertex *v, vector<nodeInfo> & res) const;
     tuple<nodeInfo, vector<nodeInfo>> getShortestPath(nodeInfo point, vector<nodeInfo> destinations);
-
+    bool checkValidPath(vector<nodeInfo> path, double &previousCost);
 public:
 	Vertex *findVertex(const nodeInfo &in) const;
 	bool addVertex(const nodeInfo &in);
@@ -44,8 +44,9 @@ public:
     void clearVisitedVertexes();
 
     vector<nodeInfo> nearestNeighbour(nodeInfo startPoint,  vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries);
-
     double getPathCost(vector<nodeInfo> path);
+    vector<nodeInfo> twoOpt(vector<nodeInfo> currentPath, vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries);
+    void twoOptSwap(int i, int j, vector<nodeInfo> &tmpPath, vector<nodeInfo> currentPath);
 };
 
 /**************** Single Source Shortest Path algorithms ************/

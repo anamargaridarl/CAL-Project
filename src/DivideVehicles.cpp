@@ -48,8 +48,8 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
     }
 
 
-    for (Vehicle* v : v) {
-        totalVehicleWeight += v->getCapacity();
+    for (Vehicle* vehicle : v) {
+        totalVehicleWeight += vehicle->getCapacity();
     }
 
     if (totalVehicleWeight < totalWeight) {
@@ -83,12 +83,15 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
             }
         }
 
+
+
         vector<tuple<nodeInfo, vector<nodeInfo>>> deliveriesInVehicle;
 
         if (index != -1) {
-            deliveriesInVehicle = finalPaths.at(i).second;
+            deliveriesInVehicle = finalPaths.at(index).second;
             finalPaths.erase(finalPaths.begin() + index);
         }
+
 
 
         deliveriesInVehicle.push_back(deliveries[i]);
@@ -96,6 +99,7 @@ vector<pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>>> bestFit(vector
 
 
     }
+
 
     return finalPaths;
 }

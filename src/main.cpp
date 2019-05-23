@@ -81,7 +81,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
     currentPath = path;
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
-        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "red");
+        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "yellow");
     }
     gv->setVertexColor(start.nodeID, "green");
     for(nodeInfo node : retrievalPoints)
@@ -96,7 +96,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
 }
 
 void resetMapPath()
-{
+{ //TODO: Needs to reset edge color too!!!
     for (Vertex *v : graph.getVertexSet()) {
         gv->setVertexColor(v->getInfo().nodeID, "blue");
     }
@@ -128,7 +128,6 @@ void loadMapMenu()
         perror ("GraphFiles Directory not found!");
         return;
     }
-    //options.push_back(new Option("View Loaded Map", displayMap));
     Menu loadMapMenu("Choose Map to Load", options);
 
     loadMapMenu.run();
@@ -151,22 +150,32 @@ void loadMapMenu()
 
 void vehicleCreation()
 {
-    unsigned int capacity;
+    unsigned int specialization;
     cout << "----Vehicle Creation----" << endl;
 
-    cout << "-Insert Vehicle Capacity: ";
-    while(!(cin >> capacity))
+    cout << "Insert Vehicle Specialization: " << endl;
+    cout << "0: Money " << endl;
+    cout << "1: Art " << endl;
+    cout << "2: Love " << endl;
+
+    while(!(cin >> specialization) || specialization > 2 || specialization < 0)
     {
-        cout << "Invalid Capacity!" << endl;
+        cout << "Invalid Specialization!" << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Insert Vehicle Capacity: ";
+        cout << "Insert Vehicle Specialization: ";
+        cout << "1.Money " << endl;
+        cout << "2.Art " << endl;
+        cout << "3.Love " << endl;
     }
     cout << endl;
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    Vehicle* v = new Vehicle(capacity, Love);
+
+    Vehicle* v = new Vehicle(specialization);
+
+
 
     vehicles.push_back(v);
 }
@@ -228,6 +237,10 @@ void createJourneyMenu() {
         cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
         return;
     }
+    if (vehicles.empty()) {
+        cout << "There are no Vehicles in your fleet!\n    Please Create your vehicles first!" << endl;
+        return;
+    }
     resetMapPath();
 
     const auto readPointID = [](int &id) {
@@ -265,19 +278,40 @@ void createJourneyMenu() {
         return;
     }
 
-    //Show the 2 points on the Map
+    //TODO Show the 2 points on the Map
 
     nodeInfo startPoint(startPointID);
     Vertex *startVertex = graph.findVertex(startPoint);
     vertexList.push_back(startVertex);
 
-    vector < tuple < nodeInfo, vector < nodeInfo >> > deliveries;
+    vector < tuple < nodeInfo, vector < nodeInfo >> > deliveries[3];
     vector <nodeInfo> allDeliveryPoints;
     vector <nodeInfo> allRetrievalPoints;
     while (true) {
         int retrievalID = -1;
         cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
         if (!readPointID(retrievalID)) break;
+
+        int specialization = -1;
+        cout << "Insert the type of Merch: " << endl;
+        cout << "0: Money " << endl;
+        cout << "1: Art " << endl;
+        cout << "2: Love " << endl;
+
+        while(!(cin >> specialization) || specialization > 2|| specialization < 0)
+        {
+            cout << "Invalid Merch Type!" << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Insert the type of Merch: " << endl;
+            cout << "0: Money " << endl;
+            cout << "1: Art " << endl;
+            cout << "2: Love " << endl;
+        }
+        cout << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         nodeInfo retrievalPoint(retrievalID);
         vertexList.push_back(graph.findVertex(retrievalPoint));
 
@@ -295,17 +329,16 @@ void createJourneyMenu() {
             vertexList.push_back(graph.findVertex(deliveryPoint));
         }
 
-
-        //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
-        //Check if there is still merch which has not been delivered (When weights are added)
-
-        //Insert the retrieval and it's delivery list into the List of PoI
-
+        if(deliveryPoints.empty())
+        {
+            cout << "Retrieval point had no deliveries so it was ignored!" << endl;
+            continue;
+        }
 
         allDeliveryPoints.insert(allDeliveryPoints.begin(), deliveryPoints.begin(), deliveryPoints.end());
         allRetrievalPoints.push_back(retrievalPoint);
         tuple <nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
-        deliveries.push_back(delivery);
+        deliveries[specialization].push_back(delivery);
     }
 
     graph.dfs(startVertex);
@@ -320,25 +353,43 @@ void createJourneyMenu() {
     if (!possible) return;
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > paths = divideVehicles(vehicles, deliveries);
+            vector < nodeInfo >> >> > moneyPaths = divideVehicles(vehicles, deliveries[0]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > artPaths = divideVehicles(vehicles, deliveries[1]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > lovePaths = divideVehicles(vehicles, deliveries[2]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > paths[3] = {moneyPaths, artPaths, lovePaths};
 
     int vehicleDisplay = 0;
     int flagDisplay = 1;
 
     while (flagDisplay) {
+        cout << "0: Exit" << endl;
 
-        for (int i = 1; i <= paths.size(); i++) {
-
-            cout << i << ".Vehicle" << i << endl;
-
+        for (int i = 0; i < 3; i++) {
+            for(int j = 1; j <= paths[i].size(); j++)
+            cout << j << ": Display " << (paths[i][j-1].first)->getType() << " Vehicle " << j << endl;
         }
-
-        cout << "0. Exit" << endl;
 
         cin >> vehicleDisplay;//TODO: handle errors
 
         if(vehicleDisplay == 0)
             break;
+
+        int j = vehicleDisplay;
+        int row = 0;
+        for(int i = 0; i < 3; i++)
+        {
+            if(j - paths[i].size() <= 0)
+            {
+                row = i;
+                break;
+            }
+        }
 
         vehicleDisplay--;
 
@@ -348,14 +399,14 @@ void createJourneyMenu() {
         del.clear();
         ret.clear();
 
-        for (tuple <nodeInfo, vector<nodeInfo>> request: paths.at(vehicleDisplay).second) {
+        for (tuple <nodeInfo, vector<nodeInfo>> request: paths[row].at(vehicleDisplay).second) {
             for (nodeInfo n: get<1>(request)) {
                 del.push_back(n);
             }
             ret.push_back(get<0>(request));
         }
 
-        /* testes
+/*testes
         for(pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>> meias: paths) {
             vector < tuple < nodeInfo, vector < nodeInfo >> > batatas = meias.second;
             cout << "veiculo 1 " << endl;
@@ -369,12 +420,12 @@ void createJourneyMenu() {
 
                 }
 
-
             }
         }
-*/
+        */
 
-        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths.at(vehicleDisplay).second);
+
+        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(vehicleDisplay).second);
         clearPreviousPath();
         displayPath(startPoint, ret, del, path);
 

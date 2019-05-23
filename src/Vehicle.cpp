@@ -4,9 +4,25 @@ using namespace std;
 
 int i = 0;
 
-Vehicle::Vehicle(unsigned int capacity, merchType typeOfMerch) : capacity(capacity), typeOfMerch(typeOfMerch) {
+Vehicle::Vehicle(unsigned int specialization) {
+
+    if(specialization == 0)
+    {
+        capacity = 100;
+        typeOfMerch = Money;
+    }
+    else if(specialization == 1)
+    {
+        capacity = 500;
+        typeOfMerch = Art;
+    }
+    else if(specialization == 2)
+    {
+        capacity = 40;
+        typeOfMerch = Love;
+    }
+
     id = i;
-    printf("%d\n", id);
     i++;
 }
 
@@ -26,3 +42,6 @@ int Vehicle::getID() {
     return id;
 }
 
+std::string Vehicle::getType() {
+    return merchTypeString[typeOfMerch];
+}
