@@ -6,19 +6,22 @@ void Graph::dijkstraShortestPath(const nodeInfo &origin, const nodeInfo &end) {
     {
         v->dist = INF;
         v->path = NULL;
+        v->queueValue = 0;
+        v->queueIndex = 0;
     }
 
     Vertex *s = findVertex(origin);
     s->dist = 0;
     s->path = NULL;
 
-    MutablePriorityQueue<Vertex> q;
+    MutablePriorityQueue q;
 
     q.insert(s);
 
-    while(!q.empty())
+    Vertex *v;
+    while(!q.empty() || v->info == end)
     {
-        Vertex *v = q.extractMin();
+        v = q.extractMin();
         if(v->getInfo() == end)
             break;
         for(auto w: v->adj)
@@ -26,29 +29,13 @@ void Graph::dijkstraShortestPath(const nodeInfo &origin, const nodeInfo &end) {
             double oldDist = w.dest->getDist();
             if(w.dest->getDist() > v->getDist() + w.weight) {
                 w.dest->dist = v->getDist() + w.weight;
+                w.dest->queueValue = v->getDist() + w.weight;
                 w.dest->path = v;
-                if (oldDist == numeric_limits<double>::max())
+                if (oldDist == INF)
                     q.insert(w.dest);
                 else
                     q.decreaseKey(w.dest);
             }
         }
     }
-}
-
-vector<nodeInfo> Graph::getPath(const nodeInfo &origin, const nodeInfo &dest) const{
-    vector<nodeInfo> res;
-    Vertex *d = findVertex(dest);
-    while(d->path != NULL) {
-        res.push_back(d->getInfo());
-        d = d->path;
-    }
-    res.push_back(origin);
-    reverse(res.begin(),res.end());
-    return res;
-}
-
-double Graph::getCost(const nodeInfo &dest) const{
-    Vertex *destV = findVertex(dest);
-    return destV->getDist();
 }

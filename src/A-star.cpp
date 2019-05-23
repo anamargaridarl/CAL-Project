@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "Graph.h"
 
 double cartesianDistance (nodeInfo* point1, const nodeInfo* point2) {
@@ -10,19 +11,22 @@ void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
     {
         v->dist = INF;
         v->path = NULL;
+        v->queueValue = 0;
+        v->queueIndex = 0;
     }
 
     Vertex *s = findVertex(origin);
     s->dist = 0;
     s->path = NULL;
 
-    MutablePriorityQueue<Vertex> q;
+    MutablePriorityQueue q;
 
     q.insert(s);
 
-    while(!q.empty())
+    Vertex *v;
+    while(!q.empty() || v->info == end)
     {
-        Vertex *v = q.extractMin();
+        v = q.extractMin();
         if(v->getInfo() == end)
             break;
         for(auto w: v->adj)
@@ -30,11 +34,14 @@ void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
             double oldDist = w.dest->getDist();
             if(w.dest->getDist() > v->getDist() + w.weight) {
                 w.dest->dist = v->getDist() + w.weight;
+                w.dest->queueValue = v->getDist() + w.weight + cartesianDistance(&v->info, &w.dest->info);
                 w.dest->path = v;
-                if (oldDist == INF)
+                if (w.dest->queueIndex == 0) {
                     q.insert(w.dest);
-                else
+                }
+                else {
                     q.decreaseKey(w.dest);
+                }
             }
         }
     }

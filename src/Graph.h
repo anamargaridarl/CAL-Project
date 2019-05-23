@@ -13,9 +13,9 @@
 #include "MutablePriorityQueue.h"
 #include "Vertex.h"
 
-using namespace std;
+#define INF numeric_limits<double>::max()
 
-#define INF numeric_limits<double>::max();
+using namespace std;
 
 /*************************** Graph  **************************/
 
@@ -35,7 +35,6 @@ public:
 
 	void dijkstraShortestPath(const nodeInfo &s, const nodeInfo &e);
     void aStarShortestPath(const nodeInfo &s, const nodeInfo &e);
-    vector<vector<nodeInfo>> nearestNeighbour(nodeInfo startPoint, vector<nodeInfo> points);
 
 	vector<nodeInfo> getPath(const nodeInfo &origin, const nodeInfo &dest) const;
     double getCost(const nodeInfo &dest) const;

@@ -61,7 +61,8 @@ tuple<nodeInfo, vector<nodeInfo>> Graph::getShortestPath(nodeInfo point, vector<
     nodeInfo node;
     for(nodeInfo endPoint : possiblePoints)
     {
-        dijkstraShortestPath(point, endPoint);
+        aStarShortestPath(point, endPoint);
+        //dijkstraShortestPath(point, endPoint);
         vector<nodeInfo> path = getPath(point, endPoint);
         double cost = getPathCost(path);
         if(distance == -1 || cost < distance)
@@ -113,7 +114,9 @@ vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<node
         vector<nodeInfo> newPoints = getDeliveryPoints(currentPosition, deliveries);
         pointsAvailableAtStart.insert(pointsAvailableAtStart.end(), newPoints.begin(), newPoints.end());
     }
-    dijkstraShortestPath(currentPosition, startPoint);
+    //dijkstraShortestPath(currentPosition, startPoint);
+    aStarShortestPath(currentPosition, startPoint);
+
     vector<nodeInfo> finalPath = getPath(currentPosition, startPoint);
     route.insert(route.end(), finalPath.begin(), finalPath.end());
 
