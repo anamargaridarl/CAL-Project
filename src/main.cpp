@@ -81,7 +81,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
     currentPath = path;
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
-        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "red");
+        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "yellow");
     }
     gv->setVertexColor(start.nodeID, "green");
     for(nodeInfo node : retrievalPoints)
@@ -96,7 +96,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
 }
 
 void resetMapPath()
-{
+{ //TODO: Needs to reset edge color too!!!
     for (Vertex *v : graph.getVertexSet()) {
         gv->setVertexColor(v->getInfo().nodeID, "blue");
     }
@@ -126,7 +126,6 @@ void loadMapMenu()
         perror ("GraphFiles Directory not found!");
         return;
     }
-    //options.push_back(new Option("View Loaded Map", displayMap));
     Menu loadMapMenu("Choose Map to Load", options);
 
     loadMapMenu.run();
