@@ -9,7 +9,7 @@
 #include "Menu.h"
 #include "GraphViewer/graphviewer.h"
 #include "Dijkstra.cpp"
-
+#include "DivideVehicles.h"
 
 using namespace std;
 
@@ -18,6 +18,7 @@ bool graphViewerLoaded = false;
 
 vector<Vehicle*> vehicles;
 Graph graph;
+vector<nodeInfo> currentPath;
 
 long int hashIdPair(long int id1, long int id2) {
     return (long int)(0.5*(id1+id2)*(id1+id2+1)+id2);
@@ -68,9 +69,16 @@ void displayMap()
     gv->rearrange();
 }
 
+void clearPreviousPath() {
+    for (int i = 0; i < currentPath.size(); i++) {
+        gv->setVertexColor(currentPath[i].nodeID, "blue");
+        gv->setEdgeColor(currentPath[i-1].nodeID*1000000000+currentPath[i].nodeID, "black");
+    }
+}
+
 void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
 {
-    displayMap();
+    currentPath = path;
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
         gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "yellow");
@@ -212,10 +220,8 @@ void vehiclesMenu()
     vehiclesMenu.run();
 }
 
-void createJourneyMenu()
-{
-    if(graph.getVertexSet().empty())
-    {
+void createJourneyMenu() {
+    if (graph.getVertexSet().empty()) {
         cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
         return;
     }
@@ -225,23 +231,20 @@ void createJourneyMenu()
         string userInput;
         bool invalidID = true;
 
-        while(invalidID)
-        {
+        while (invalidID) {
             cin >> userInput;
             if (userInput == "!") return false;
-            try{
+            try {
                 id = stoi(userInput);
             }
-            catch(invalid_argument &e)
-            {
+            catch (invalid_argument &e) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Invalid Input!\n Try again: " << flush;
                 continue;
             }
             invalidID = (graph.findVertex(id) == nullptr);
-            if(invalidID)
-            {
+            if (invalidID) {
                 cout << "ERROR: Invalid Location!\n Try again: " << flush;
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -250,12 +253,11 @@ void createJourneyMenu()
         return true;
     };
 
-    vector<Vertex*> vertexList;
+    vector < Vertex * > vertexList;
 
     int startPointID = -1;
     cout << "Insert ID of the start point for all Vehicles(! to cancel): " << flush;
-    if(!readPointID(startPointID))
-    {
+    if (!readPointID(startPointID)) {
         cout << "The trip has been Canceled!" << endl;
         return;
     }
@@ -263,55 +265,118 @@ void createJourneyMenu()
     //Show the 2 points on the Map
 
     nodeInfo startPoint(startPointID);
-    Vertex* startVertex = graph.findVertex(startPoint);
+    Vertex *startVertex = graph.findVertex(startPoint);
     vertexList.push_back(startVertex);
 
-    vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries;
-    vector<nodeInfo> allDeliveryPoints;
-    vector<nodeInfo> allRetrievalPoints;
-    while(true)
-    {
+    vector < tuple < nodeInfo, vector < nodeInfo >> > deliveries;
+    vector <nodeInfo> allDeliveryPoints;
+    vector <nodeInfo> allRetrievalPoints;
+    while (true) {
         int retrievalID = -1;
         cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
-        if(!readPointID(retrievalID)) break;
+        if (!readPointID(retrievalID)) break;
         nodeInfo retrievalPoint(retrievalID);
         vertexList.push_back(graph.findVertex(retrievalPoint));
 
-        vector<nodeInfo> deliveryPoints;
-        while(true) {
+        vector <nodeInfo> deliveryPoints;
+        while (true) {
             int deliveryID = -1;
+            int quantity = 0;
             cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
-            if(!readPointID(deliveryID)) break;
+            if (!readPointID(deliveryID)) break;
+            cout << "Insert quantity of goods" << endl;
+            cin >> quantity;
             nodeInfo deliveryPoint(deliveryID);
+            deliveryPoint.setQuantity(quantity);
             deliveryPoints.push_back(deliveryPoint);
             vertexList.push_back(graph.findVertex(deliveryPoint));
         }
+
 
         //Check if the retrieval has no deliveries (If it doesn't then cancel the retrieval)
         //Check if there is still merch which has not been delivered (When weights are added)
 
         //Insert the retrieval and it's delivery list into the List of PoI
+
+
         allDeliveryPoints.insert(allDeliveryPoints.begin(), deliveryPoints.begin(), deliveryPoints.end());
         allRetrievalPoints.push_back(retrievalPoint);
-        tuple<nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
+        tuple <nodeInfo, vector<nodeInfo>> delivery = make_tuple(retrievalPoint, deliveryPoints);
         deliveries.push_back(delivery);
     }
 
     graph.dfs(startVertex);
     bool possible = true;
-    for(auto v : vertexList)
-    {
-        if(!v->isVisited())
-        {
+    for (auto v : vertexList) {
+        if (!v->isVisited()) {
             possible = false;
             cout << "Vertex with ID: " << v->getInfo().nodeID << " Is inaccessible from the starting position" << endl;
         }
     }
     graph.clearVisitedVertexes();
-    if(!possible) return;
+    if (!possible) return;
 
-    vector<nodeInfo> path = graph.nearestNeighbour(startPoint, deliveries);
-    displayPath(startPoint, allRetrievalPoints, allDeliveryPoints, path);
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > paths = divideVehicles(vehicles, deliveries);
+
+    int vehicleDisplay = 0;
+    int flagDisplay = 1;
+
+    while (flagDisplay) {
+
+        for (int i = 1; i <= paths.size(); i++) {
+
+            cout << i << ".Vehicle" << i << endl;
+
+        }
+
+        cout << "0. Exit" << endl;
+
+        cin >> vehicleDisplay;//TODO: handle errors
+
+        if(vehicleDisplay == 0)
+            break;
+
+        vehicleDisplay--;
+
+        vector <nodeInfo> del; //deliveries
+        vector <nodeInfo> ret; //retrivals
+
+        del.clear();
+        ret.clear();
+
+        for (tuple <nodeInfo, vector<nodeInfo>> request: paths.at(vehicleDisplay).second) {
+            for (nodeInfo n: get<1>(request)) {
+                del.push_back(n);
+            }
+            ret.push_back(get<0>(request));
+        }
+
+        /* testes
+        for(pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>> meias: paths) {
+            vector < tuple < nodeInfo, vector < nodeInfo >> > batatas = meias.second;
+            cout << "veiculo 1 " << endl;
+            for (tuple <nodeInfo, vector<nodeInfo>> bananas: batatas) {
+                cout << "node recolha" << get<0>(bananas).nodeID << endl;
+
+                vector <nodeInfo> coubes = get<1>(bananas);
+                for (nodeInfo cobes:coubes) {
+                    cout << "nodes " << cobes.nodeID << endl;
+                    cout << "nodes end " << endl;
+
+                }
+
+
+            }
+        }
+*/
+
+        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths.at(vehicleDisplay).second);
+        clearPreviousPath();
+        displayPath(startPoint, ret, del, path);
+
+    }
+
 
     /*//TEMPORARY Dijkstra
     graph.dijkstraShortestPath(startPoint, endPoint);

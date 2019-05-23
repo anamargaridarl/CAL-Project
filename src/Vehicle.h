@@ -2,6 +2,9 @@
 #define PROJECT_VEHICLE_H
 
 #include <string>
+#include <vector>
+#include <tuple>
+#include "Vertex.h"
 
 enum merchType {
     Money,
@@ -15,10 +18,14 @@ class Vehicle {
 public:
     Vehicle(unsigned int capacity, merchType typeOfMerch);
     std::string getInfo();
-
+    int getCapacity();
+    int setCapacity(int c);
+    int getID();
 private:
+    int id;
     unsigned int capacity;
     merchType typeOfMerch;
+
 };
 
 
