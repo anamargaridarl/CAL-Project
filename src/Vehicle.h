@@ -22,6 +22,9 @@ public:
     int getCapacity();
     int setCapacity(int c);
     int getID();
+
+    merchType getTypeOfMerch() const;
+
 private:
     int id;
     unsigned int capacity;

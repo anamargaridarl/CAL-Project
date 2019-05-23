@@ -45,3 +45,7 @@ int Vehicle::getID() {
 std::string Vehicle::getType() {
     return merchTypeString[typeOfMerch];
 }
+
+merchType Vehicle::getTypeOfMerch() const {
+    return typeOfMerch;
+}

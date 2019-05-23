@@ -78,10 +78,12 @@ void clearPreviousPath() {
 
 void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
 {
+    cout << "START POINT: " << start.nodeID << endl;
     currentPath = path;
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
         gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "yellow");
+        cout << "Next: " << path[i].nodeID << endl;
     }
     gv->setVertexColor(start.nodeID, "green");
     for(nodeInfo node : retrievalPoints)
@@ -352,19 +354,39 @@ void createJourneyMenu() {
     graph.clearVisitedVertexes();
     if (!possible) return;
 
-    vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > moneyPaths = divideVehicles(vehicles, deliveries[0]);
+    vector<Vehicle*> moneyVehicles;
+    vector<Vehicle*> artVehicles;
+    vector<Vehicle*> loveVehicles;
+
+    for(Vehicle* vehicle : vehicles)
+    {
+        switch(vehicle->getTypeOfMerch())
+        {
+            case Money:
+                moneyVehicles.push_back(vehicle);
+                break;
+            case Art:
+                artVehicles.push_back(vehicle);
+                break;
+            case Love:
+                loveVehicles.push_back(vehicle);
+                break;
+        }
+    }
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > artPaths = divideVehicles(vehicles, deliveries[1]);
+            vector < nodeInfo >> >> > moneyPaths = divideVehicles(moneyVehicles, deliveries[0]);
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > lovePaths = divideVehicles(vehicles, deliveries[2]);
+            vector < nodeInfo >> >> > artPaths = divideVehicles(artVehicles, deliveries[1]);
+
+    vector < pair < Vehicle * , vector < tuple < nodeInfo,
+            vector < nodeInfo >> >> > lovePaths = divideVehicles(loveVehicles, deliveries[2]);
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
             vector < nodeInfo >> >> > paths[3] = {moneyPaths, artPaths, lovePaths};
 
-    int vehicleDisplay = 0;
+    int vehicleDisplay = -1;
     int flagDisplay = 1;
 
     while (flagDisplay) {
@@ -380,7 +402,14 @@ void createJourneyMenu() {
             }
         }
 
-        cin >> vehicleDisplay;//TODO: handle errors
+        while(!(cin >> vehicleDisplay) || vehicleDisplay < 0 || vehicleDisplay > y)
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid Option! Insert a valid number: " << flush;
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         if(vehicleDisplay == 0)
             break;
