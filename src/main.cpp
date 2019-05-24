@@ -375,13 +375,21 @@ void createJourneyMenu() {
     }
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > moneyPaths = divideVehicles(moneyVehicles, deliveries[0]);
-
+            vector < nodeInfo >> >> > moneyPaths;
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > artPaths = divideVehicles(artVehicles, deliveries[1]);
-
+            vector < nodeInfo >> >> > artPaths;
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
-            vector < nodeInfo >> >> > lovePaths = divideVehicles(loveVehicles, deliveries[2]);
+            vector < nodeInfo >> >> > lovePaths;
+
+    if(!moneyVehicles.empty())
+        moneyPaths = divideVehicles(moneyVehicles, deliveries[0]);
+
+
+    if(!artVehicles.empty())
+     artPaths = divideVehicles(artVehicles, deliveries[1]);
+
+    if(!loveVehicles.empty())
+        lovePaths = divideVehicles(loveVehicles, deliveries[2]);
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
             vector < nodeInfo >> >> > paths[3] = {moneyPaths, artPaths, lovePaths};
