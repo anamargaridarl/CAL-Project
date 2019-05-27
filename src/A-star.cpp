@@ -18,6 +18,7 @@ void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
     Vertex *s = findVertex(origin);
     s->dist = 0;
     s->path = NULL;
+    Vertex *e = findVertex(end);
 
     MutablePriorityQueue q;
 
@@ -34,7 +35,7 @@ void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
             double oldDist = w.dest->getDist();
             if(w.dest->getDist() > v->getDist() + w.weight) {
                 w.dest->dist = v->getDist() + w.weight;
-                w.dest->queueValue = v->getDist() + w.weight + cartesianDistance(&v->info, &w.dest->info);
+                w.dest->queueValue = v->getDist() + w.weight + cartesianDistance(&v->info, &e->info);
                 w.dest->path = v;
                 if (w.dest->queueIndex == 0) {
                     q.insert(w.dest);
