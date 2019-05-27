@@ -245,6 +245,18 @@ void vehiclesMenu()
 }
 
 void createJourneyMenu() {
+    nodeInfo start(314075196);
+   nodeInfo end(314075061);
+
+   //graph.dijkstraShortestPath(start, end);
+   graph.aStarShortestPath(start, end);
+
+   vector<nodeInfo> path = graph.getPath(start, end);
+   vector<nodeInfo> null1, null2;
+   displayPath(start, null1, null2, path);
+
+   return;
+
     if (graph.getVertexSet().empty()) {
         cout << "There is no map currently loaded!\n    Please Load a Map!" << endl;
         return;
@@ -485,6 +497,7 @@ int main() {
     gv->createWindow(600, 600);
     gv->defineVertexColor("blue");
     gv->defineEdgeColor("black");
+
     bool quit = false;
     do{
         mainMenu();

@@ -51,7 +51,7 @@ class Vertex {
     double dist = 0;
     Vertex *path = NULL;
     int queueIndex = 0; 		// required by MutablePriorityQueue
-    int queueValue = 0;
+    double queueValue = 0;
 
     bool processing = false;
     void addEdge(Vertex *dest, double w);
