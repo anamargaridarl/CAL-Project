@@ -61,7 +61,7 @@ void displayMap()
     for (Vertex *v : graph.getVertexSet()) {
         gv->addNode(v->getInfo().nodeID, v->getInfo().lat-offsetX, v->getInfo().lon-offsetY);
         for (Edge e : v->getEdges()) {
-            gv->addEdge(v->getInfo().nodeID*1000000000+e.getDest()->getInfo().nodeID,v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
+            gv->addEdge(e.getId(),v->getInfo().nodeID, e.getDest()->getInfo().nodeID, EdgeType::DIRECTED);
         }
     }
 
@@ -72,8 +72,17 @@ void displayMap()
 void clearPreviousPath() {
     for (int i = 0; i < currentPath.size(); i++) {
         gv->setVertexColor(currentPath[i].nodeID, "blue");
-        gv->setEdgeColor(currentPath[i-1].nodeID*1000000000+currentPath[i].nodeID, "black");
+        vector<Edge> edges = graph.findVertex(currentPath[i].nodeID)->getEdges();
+        for(Edge edge : edges)
+        {
+            gv->setEdgeColor(edge.getId(), "black");
+        }
     }
+}
+
+void showPoint(int pointID, string color)
+{
+    gv->setVertexColor(pointID.nodeID, color);
 }
 
 void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
@@ -98,20 +107,36 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
 }
 
 void resetMapPath()
-{ //TODO: Needs to reset edge color too!!!
+{
     for (Vertex *v : graph.getVertexSet()) {
         gv->setVertexColor(v->getInfo().nodeID, "blue");
+        vector<Edge> edges = v->getEdges();
+        for(Edge edge : edges)
+        {
+            gv->setEdgeColor(edge.getId(), "black");
+        }
     }
 }
 
 void loadChosenMap(string name)
 {
+    cout << "Would you like to load the map as Bidirectional?(Y or N)" << flush;
+    string answer = "";
+    bool bidirectional = false;
+    while(!(cin >> answer) || (answer != "Y" && answer != "N"))
+    {
+        cout << "Invalid Answer (Enter Y or N): " << flush;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    bidirectional = (answer == "Y");
+
     if(graphViewerLoaded) clearGraphViewer();
     graph.clear();
-    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "");
+    graph = importGraph("../GraphFiles/" + name + "/T08_nodes_X_Y_" + name + ".txt", "../GraphFiles/" + name + "/T08_edges_" + name + ".txt", "", bidirectional);
     displayMap();
-    /*graph.dijkstraShortestPath(nodeInfo(1108123561),nodeInfo(311887395));
-    cout << graph.findVertex(nodeInfo(311887395))->getDist() << endl;*/
 }
 
 void loadMapMenu()
@@ -133,21 +158,6 @@ void loadMapMenu()
     Menu loadMapMenu("Choose Map to Load", options);
 
     loadMapMenu.run();
-
-    /*
-    //TEMP
-    vector<nodeInfo> nodes;
-
-    nodeInfo n1(90379619);
-    nodeInfo n2(90379359);
-    nodeInfo n3(122586155);
-
-    nodes.push_back(n1);
-    nodes.push_back(n2);
-    nodes.push_back(n3);
-
-    graph.clarkeWright(nodes);
-    */
 }
 
 void vehicleCreation()
@@ -280,7 +290,7 @@ void createJourneyMenu() {
         return;
     }
 
-    //TODO Show the 2 points on the Map
+    showPoint(startPointID, "green");
 
     nodeInfo startPoint(startPointID);
     Vertex *startVertex = graph.findVertex(startPoint);

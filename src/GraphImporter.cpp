@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Graph importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePath) {
+Graph importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePath, bool bi) {
     Graph graph;
 
     ifstream nodesFile(nodesFilePath);
@@ -21,7 +21,7 @@ Graph importGraph(string nodesFilePath, string edgesFilePath, string tagsFilePat
     }
 
     loadNodes(graph, nodesFile);
-    loadEdges(graph, edgesFile);
+    loadEdges(graph, edgesFile, bi);
 
     return graph;
 }
@@ -57,7 +57,7 @@ void loadNodes(Graph &graph, ifstream &nodesFile) {
     }
 }
 
-void loadEdges(Graph &graph, ifstream &edgesFile) {
+void loadEdges(Graph &graph, ifstream &edgesFile, bool bi) {
     cout << "Loading edges..." << endl;
     string line;
     getline(edgesFile, line);
@@ -71,15 +71,33 @@ void loadEdges(Graph &graph, ifstream &edgesFile) {
         return;
     }
 
-    for (unsigned long int i = 0; i < numEdges; i++) {
-        int originNodeID, destNodeID;
+    if(bi)
+    {
+        for (unsigned long int i = 0; i < numEdges; i++) {
+            int originNodeID, destNodeID;
 
-        getline(edgesFile, line);
-        sscanf(line.c_str(), "(%d, %d)", &originNodeID, &destNodeID);
-        nodeInfo origin;
-        origin.nodeID = originNodeID;
-        nodeInfo dest;
-        dest.nodeID = destNodeID;
-        graph.addEdge(origin, dest, 1);
+            getline(edgesFile, line);
+            sscanf(line.c_str(), "(%d, %d)", &originNodeID, &destNodeID);
+            nodeInfo origin;
+            origin.nodeID = originNodeID;
+            nodeInfo dest;
+            dest.nodeID = destNodeID;
+            graph.addEdge(origin, dest, 1);
+            graph.addEdge(dest, origin, 1);
+        }
+    }
+    else
+    {
+        for (unsigned long int i = 0; i < numEdges; i++) {
+            int originNodeID, destNodeID;
+
+            getline(edgesFile, line);
+            sscanf(line.c_str(), "(%d, %d)", &originNodeID, &destNodeID);
+            nodeInfo origin;
+            origin.nodeID = originNodeID;
+            nodeInfo dest;
+            dest.nodeID = destNodeID;
+            graph.addEdge(origin, dest, 1);
+        }
     }
 }
