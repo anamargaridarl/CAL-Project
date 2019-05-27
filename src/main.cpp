@@ -82,7 +82,7 @@ void clearPreviousPath() {
 
 void showPoint(int pointID, string color)
 {
-    gv->setVertexColor(pointID.nodeID, color);
+    gv->setVertexColor(pointID, color);
 }
 
 void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeInfo> deliveries, vector<nodeInfo> path)
@@ -91,7 +91,7 @@ void displayPath(nodeInfo start, vector<nodeInfo> retrievalPoints, vector<nodeIn
     currentPath = path;
     for (int i = 1; i < path.size(); i++) {
         gv->setVertexColor(path[i].nodeID, "yellow");
-        gv->setEdgeColor(path[i-1].nodeID*1000000000+path[i].nodeID, "yellow");
+        gv->setEdgeColor(graph.findVertex(path[i-1].nodeID)->getEdge(graph.findVertex(path[i].nodeID)).getId(), "yellow");
         cout << "Next: " << path[i].nodeID << endl;
     }
     gv->setVertexColor(start.nodeID, "green");
@@ -303,6 +303,7 @@ void createJourneyMenu() {
         int retrievalID = -1;
         cout << "Insert the ID of a point of retrieval(! to cancel): " << flush;
         if (!readPointID(retrievalID)) break;
+        showPoint(retrievalID, "red");
 
         int specialization = -1;
         cout << "Insert the type of Merch: " << endl;
@@ -333,6 +334,7 @@ void createJourneyMenu() {
             int quantity = 0;
             cout << "Insert the ID of a point of delivery for the previous retrieval(! to cancel): " << flush;
             if (!readPointID(deliveryID)) break;
+            showPoint(deliveryID, "magenta");
             cout << "Insert quantity of goods" << endl;
             cin >> quantity;
             nodeInfo deliveryPoint(deliveryID);
@@ -460,36 +462,12 @@ void createJourneyMenu() {
             ret.push_back(get<0>(request));
         }
 
-/*testes
-        for(pair<Vehicle*, vector<tuple<nodeInfo, vector<nodeInfo>>>> meias: paths) {
-            vector < tuple < nodeInfo, vector < nodeInfo >> > batatas = meias.second;
-            cout << "veiculo 1 " << endl;
-            for (tuple <nodeInfo, vector<nodeInfo>> bananas: batatas) {
-                cout << "node recolha" << get<0>(bananas).nodeID << endl;
-
-                vector <nodeInfo> coubes = get<1>(bananas);
-                for (nodeInfo cobes:coubes) {
-                    cout << "nodes " << cobes.nodeID << endl;
-                    cout << "nodes end " << endl;
-
-                }
-
-            }
-        }
-        */
-
-
         vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(choice).second);
         clearPreviousPath();
         displayPath(startPoint, ret, del, path);
 
     }
 
-
-    /*//TEMPORARY Dijkstra
-    graph.dijkstraShortestPath(startPoint, endPoint);
-    vector<nodeInfo> path = graph.getPath(startPoint, endPoint);
-    displayPath(startPoint, endPoint, path);*/
 }
 
 void mainMenu()
@@ -507,6 +485,21 @@ int main() {
     gv->createWindow(600, 600);
     gv->defineVertexColor("blue");
     gv->defineEdgeColor("black");
-    mainMenu();
+    bool quit = false;
+    do{
+        mainMenu();
+        cout << "Are you sure you want to quit? (Y or N): " << flush;
+        string answer = "";
+        while(!(cin >> answer) || (answer != "Y" && answer != "N"))
+        {
+            cout << "Invalid Answer (Enter Y or N): " << flush;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        if(answer == "Y") quit = true;
+    } while (!quit);
+
     return 0;
 }
