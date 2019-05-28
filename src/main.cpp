@@ -469,37 +469,37 @@ void testAlgorithms() {
 
     graph.dfs(graph.findVertex(nodeInfo(1108123561)));
     clock_t dfs_finish = clock();
-    cout << "DFS: " << dfs_finish - dfs_start << "ms" << endl;
+    cout << "DFS: " << ((double)(dfs_finish - dfs_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t dijkstra1_start = clock();
     graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(312404122));
     clock_t dijkstra1_finish = clock();
-    cout << "Dijkstra (small distance): " << graph.findVertex(nodeInfo(312404122))->getDist() << " cost, " << dijkstra1_finish - dijkstra1_start << "ms" << endl;
+    cout << "Dijkstra (small distance): " << graph.findVertex(nodeInfo(312404122))->getDist() << " cost, " << ((double)(dijkstra1_finish - dijkstra1_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t astar1_start = clock();
     graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(312404122));
     clock_t astar1_finish = clock();
-    cout << "A-star (small distance): " << graph.findVertex(nodeInfo(312404122))->getDist() << " cost, " << astar1_finish - astar1_start << "ms" << endl;
+    cout << "A-star (small distance): " << graph.findVertex(nodeInfo(312404122))->getDist() << " cost, " << ((double)(astar1_finish - astar1_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t dijkstra2_start = clock();
     graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(495503510));
     clock_t dijkstra2_finish = clock();
-    cout << "Dijkstra (medium distance): " << graph.findVertex(nodeInfo(495503510))->getDist() << " cost, " << dijkstra2_finish - dijkstra2_start << "ms" << endl;
+    cout << "Dijkstra (medium distance): " << graph.findVertex(nodeInfo(495503510))->getDist() << " cost, " << ((double)(dijkstra2_finish - dijkstra2_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t astar2_start = clock();
     graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(495503510));
     clock_t astar2_finish = clock();
-    cout << "A-star (medium distance): " << graph.findVertex(nodeInfo(495503510))->getDist() << " cost, " << astar2_finish - astar2_start << "ms" << endl;
+    cout << "A-star (medium distance): " << graph.findVertex(nodeInfo(495503510))->getDist() << " cost, " << ((double)(astar2_finish - astar2_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t dijkstra3_start = clock();
     graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(299611722));
     clock_t dijkstra3_finish = clock();
-    cout << "Dijkstra (large distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << dijkstra3_finish - dijkstra3_start << "ms" << endl;
+    cout << "Dijkstra (large distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << ((double)(dijkstra3_finish - dijkstra3_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t astar3_start = clock();
     graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(299611722));
     clock_t astar3_finish = clock();
-    cout << "A-star (large distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << astar3_finish - astar3_start << "ms" << endl;
+    cout << "A-star (large distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << ((double)(astar3_finish - astar3_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     nodeInfo startPoint(311887368);
 
@@ -523,12 +523,12 @@ void testAlgorithms() {
         return;
     }
     clock_t nn_finish = clock();
-    cout << "Nearest Neighbour: " << graph.getPathCost(path) << " cost, " << nn_finish - nn_start << "ms" << endl;
+    cout << "Nearest Neighbour: " << graph.getPathCost(path) << " cost, " << ((double)(nn_finish - nn_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 
     clock_t opt_start = clock();
     vector<nodeInfo> path1 = graph.nearestNeighbour(startPoint, poi, true, true);
     clock_t opt_finish = clock();
-    cout << "Nearest Neighbour with 2Opt: " << graph.getPathCost(path1) << " cost, " << opt_finish - opt_start << "ms" << endl;
+    cout << "Nearest Neighbour with 2Opt: " << graph.getPathCost(path1) << " cost, " << ((double)(opt_finish - opt_start))/CLOCKS_PER_SEC*1000 << "ms" << endl;
 }
 
 void mainMenu()
