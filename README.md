@@ -8,7 +8,7 @@ Instruções para utilizar o projeto:
       [T08_nodes_lat_lon_<nome do mapa>.txt] (ex: T08_nodes_lat_lon_Porto.txt)
 - Colocar o GraphViewerController.jar no pwd (No caso de Clion, IDE que usamos para desenvolver o projeto, colocar na pasta cmake-build-debug do projeto)
 
-O projeto deve abrir automaticamente uma janela do GraphViewer, e se escolher a opção loadMaps esta deve listar todos os mapas posseivei
+O projeto deve abrir automaticamente uma janela do GraphViewer, e se escolher a opção loadMaps esta deve listar todos os mapas possiveis
 (Ou seja, todas as pastas dentro da pasta GraphFiles)
 
 Sempre que terminar o programa fechar também a janela do GraphViewer
