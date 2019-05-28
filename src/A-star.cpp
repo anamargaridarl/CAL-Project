@@ -31,7 +31,7 @@ void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
             double oldDist = w.dest->getDist();
             if(w.dest->getDist() > v->getDist() + w.weight) {
                 w.dest->dist = v->getDist() + w.weight;
-                w.dest->queueValue = v->getDist() + w.weight + cartesianDistance(&v->info, &e->info);
+                w.dest->queueValue = v->getDist() + w.weight + squaredCartesianDistance(&v->info, &e->info);
                 w.dest->path = v;
                 if (w.dest->queueIndex == 0) {
                     q.insert(w.dest);

@@ -110,4 +110,9 @@ double Graph::cartesianDistance (nodeInfo* point1, const nodeInfo* point2) {
     return (sqrt(pow(point1->lon-point2->lon,2)+pow(point1->lat-point2->lat,2)));
 }
 
+double Graph::squaredCartesianDistance (nodeInfo* point1, const nodeInfo* point2) {
+    return (pow(point1->lon-point2->lon,2)+pow(point1->lat-point2->lat,2));
+}
+
+
 
