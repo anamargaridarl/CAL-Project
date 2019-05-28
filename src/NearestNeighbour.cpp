@@ -60,7 +60,7 @@ double Graph::getPathCost(vector<nodeInfo> path) {
  * @param destinations: Todos os possiveis sitios para onde o carro pode ir
  * @ret O ponto para onde ele efetivamente vai e o trajeto que vai tomar até lá
  */
-tuple<nodeInfo, vector<nodeInfo>> Graph::getShortestPath(nodeInfo point, vector<nodeInfo> destinations)
+tuple<nodeInfo, vector<nodeInfo>> Graph::getShortestPath(nodeInfo point, vector<nodeInfo> destinations, bool aStar)
 {
     vector<nodeInfo> possiblePoints = getNearestPoints(point, destinations);
 
@@ -69,9 +69,15 @@ tuple<nodeInfo, vector<nodeInfo>> Graph::getShortestPath(nodeInfo point, vector<
     nodeInfo node;
     for(nodeInfo endPoint : possiblePoints)
     {
-        aStarShortestPath(point, endPoint);
-        //dijkstraShortestPath(point, endPoint);
+        if(aStar) aStarShortestPath(point, endPoint);
+        else dijkstraShortestPath(point, endPoint);
         vector<nodeInfo> path = getPath(point, endPoint);
+        if(path.empty())
+        {
+            nodeInfo badNode(0);
+            vector<nodeInfo> empty;
+            return make_tuple(badNode, empty);
+        }
         path.erase(path.begin());
         double cost = getPathCost(path);
         if(distance == -1 || cost < distance)
@@ -100,7 +106,7 @@ vector<nodeInfo> getDeliveryPoints(nodeInfo retrievalPoint, vector<tuple<nodeInf
     return deliveryPoints;
 }
 
-vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries) {
+vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries, bool twoOpts, bool aStar) {
     vector<nodeInfo> pointsAvailableAtStart;
 
     //initialValues
@@ -115,7 +121,12 @@ vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<node
 
     while(!pointsAvailableAtStart.empty())
     {
-        tuple<nodeInfo, vector<nodeInfo>> shortestPath = getShortestPath(currentPosition, pointsAvailableAtStart);
+        tuple<nodeInfo, vector<nodeInfo>> shortestPath = getShortestPath(currentPosition, pointsAvailableAtStart, aStar);
+        if(get<1>(shortestPath).empty())
+        {
+            vector<nodeInfo> empty;
+            return empty;
+        }
 
         route.insert(route.end(), get<1>(shortestPath).begin(), get<1>(shortestPath).end());
         currentPosition = get<0>(shortestPath);
@@ -124,14 +135,16 @@ vector<nodeInfo> Graph::nearestNeighbour(nodeInfo startPoint,  vector<tuple<node
         vector<nodeInfo> newPoints = getDeliveryPoints(currentPosition, deliveries);
         pointsAvailableAtStart.insert(pointsAvailableAtStart.end(), newPoints.begin(), newPoints.end());
     }
-    //dijkstraShortestPath(currentPosition, startPoint);
-    aStarShortestPath(currentPosition, startPoint);
+    if(aStar) aStarShortestPath(currentPosition, startPoint);
+    else dijkstraShortestPath(currentPosition, startPoint);
+
 
     vector<nodeInfo> finalPath = getPath(currentPosition, startPoint);
+    finalPath.erase(finalPath.begin());
     route.insert(route.end(), finalPath.begin(), finalPath.end());
 
-    return twoOpt(route, deliveries);
-    //return route;
+    if(twoOpts) return twoOpt(route, deliveries);
+    else return route;
 }
 
 bool checkValidOrder(vector<nodeInfo> path, vector<tuple<nodeInfo, vector<nodeInfo>>> pointsOfInterest)
@@ -194,7 +207,7 @@ vector<nodeInfo> Graph::twoOpt(vector<nodeInfo> currentPath, vector<tuple<nodeIn
             {
                 vector<nodeInfo> tmpPath;
                 twoOptSwap(i, j, tmpPath, currentPath);
-                if(!checkValidOrder(tmpPath, deliveries)) break;
+                if(!checkValidOrder(tmpPath, deliveries)) continue;
                 if(checkValidPath(tmpPath, minCost))
                 {
                     currentPath = tmpPath;
