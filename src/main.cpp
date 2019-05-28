@@ -380,16 +380,32 @@ void createJourneyMenu() {
             vector < nodeInfo >> >> > artPaths;
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
             vector < nodeInfo >> >> > lovePaths;
+    try {
+        if (!moneyVehicles.empty())
+            moneyPaths = divideVehicles(moneyVehicles, deliveries[0]);
+    }
+    catch (OverLimitVehicles e) {
+        e.what();
+    }
 
-    if(!moneyVehicles.empty())
-        moneyPaths = divideVehicles(moneyVehicles, deliveries[0]);
+
+    try {
+        if (!artVehicles.empty())
+            artPaths = divideVehicles(artVehicles, deliveries[1]);
+    }
+    catch (OverLimitVehicles e) {
+        e.what();
+    }
 
 
-    if(!artVehicles.empty())
-     artPaths = divideVehicles(artVehicles, deliveries[1]);
-
-    if(!loveVehicles.empty())
-        lovePaths = divideVehicles(loveVehicles, deliveries[2]);
+    try {
+        if (!loveVehicles.empty())
+            lovePaths = divideVehicles(loveVehicles, deliveries[2]);
+    }
+    catch (OverLimitVehicles
+           e) {
+        e.what();
+    }
 
     vector < pair < Vehicle * , vector < tuple < nodeInfo,
             vector < nodeInfo >> >> > paths[3] = {moneyPaths, artPaths, lovePaths};
