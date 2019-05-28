@@ -23,7 +23,7 @@ class Graph {
 	vector<Vertex *> vertexSet;    // vertex set
 
     void dfsVisit(Vertex *v, vector<nodeInfo> & res) const;
-    tuple<nodeInfo, vector<nodeInfo>> getShortestPath(nodeInfo point, vector<nodeInfo> destinations);
+    tuple<nodeInfo, vector<nodeInfo>> getShortestPath(nodeInfo point, vector<nodeInfo> destinations, bool aStar);
     bool checkValidPath(vector<nodeInfo> path, double &previousCost);
 public:
 	Vertex *findVertex(const nodeInfo &in) const;
@@ -45,7 +45,7 @@ public:
     vector<nodeInfo> dfs(Vertex* startVertex) const;
     void clearVisitedVertexes();
 
-    vector<nodeInfo> nearestNeighbour(nodeInfo startPoint,  vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries);
+    vector<nodeInfo> nearestNeighbour(nodeInfo startPoint,  vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries, bool twoOpts, bool aStar);
     double getPathCost(vector<nodeInfo> path);
     vector<nodeInfo> twoOpt(vector<nodeInfo> currentPath, vector<tuple<nodeInfo, vector<nodeInfo>>> deliveries);
     void twoOptSwap(int i, int j, vector<nodeInfo> &tmpPath, vector<nodeInfo> currentPath);

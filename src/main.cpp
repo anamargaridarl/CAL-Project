@@ -253,7 +253,7 @@ void createJourneyMenu() {
             try {
                 id = stoi(userInput);
             }
-            catch (invalid_argument &e) {
+            catch (exception &e) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Invalid Input!\n Try again: " << flush;
@@ -450,7 +450,12 @@ void createJourneyMenu() {
             ret.push_back(get<0>(request));
         }
 
-        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(choice).second);
+        vector <nodeInfo> path = graph.nearestNeighbour(startPoint, paths[row].at(choice).second, false, true);
+        if(path.empty())
+        {
+            cout << "Impossible to create a Route" << endl;
+            return;
+        }
         clearPreviousPath();
         displayPath(startPoint, ret, del, path);
 
@@ -489,12 +494,41 @@ void testAlgorithms() {
     clock_t dijkstra3_start = clock();
     graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(299611722));
     clock_t dijkstra3_finish = clock();
-    cout << "Dijkstra (medium distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << dijkstra3_finish - dijkstra3_start << "ms" << endl;
+    cout << "Dijkstra (large distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << dijkstra3_finish - dijkstra3_start << "ms" << endl;
 
     clock_t astar3_start = clock();
     graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(299611722));
     clock_t astar3_finish = clock();
-    cout << "A-star (medium distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << astar3_finish - astar3_start << "ms" << endl;
+    cout << "A-star (large distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << astar3_finish - astar3_start << "ms" << endl;
+
+    nodeInfo startPoint(311887368);
+
+    nodeInfo retriaval1(314075202);
+    nodeInfo rd1(311887395);
+    nodeInfo rd2(314075673);
+    vector<nodeInfo> r1; r1.push_back(rd1); r1.push_back(rd2);
+    tuple<nodeInfo, vector<nodeInfo>> delivery1 = make_tuple(retriaval1, r1);
+
+    nodeInfo retriaval2(314075690);
+    nodeInfo rd3(1108123763);
+    vector<nodeInfo> r2; r2.push_back(rd3);
+    tuple<nodeInfo, vector<nodeInfo>> delivery2 = make_tuple(retriaval2, r2);
+    vector<tuple<nodeInfo, vector<nodeInfo>>> poi; poi.push_back(delivery1); poi.push_back(delivery2);
+
+    clock_t nn_start = clock();
+    vector<nodeInfo> path = graph.nearestNeighbour(startPoint, poi, false, true);
+    if(path.empty())
+    {
+        cout << "Impossible to create a Route" << endl;
+        return;
+    }
+    clock_t nn_finish = clock();
+    cout << "Nearest Neighbour: " << graph.getPathCost(path) << " cost, " << nn_finish - nn_start << "ms" << endl;
+
+    clock_t opt_start = clock();
+    vector<nodeInfo> path1 = graph.nearestNeighbour(startPoint, poi, true, true);
+    clock_t opt_finish = clock();
+    cout << "Nearest Neighbour with 2Opt: " << graph.getPathCost(path1) << " cost, " << opt_finish - opt_start << "ms" << endl;
 }
 
 void mainMenu()

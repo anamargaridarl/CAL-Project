@@ -18,7 +18,7 @@ Vertex* Graph::findVertex(const nodeInfo &in) const {
     for (auto v : vertexSet)
         if (v->info == in)
             return v;
-    return NULL;
+    return nullptr;
 }
 
 /*
