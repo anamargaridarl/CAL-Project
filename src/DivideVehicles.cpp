@@ -6,18 +6,10 @@
 #include <algorithm>
 #include <tuple>
 #include <iostream>
+#include "DivideVehicles.h"
 
 using namespace std;
 
-class OverLimitVehicles {
-public:
-    OverLimitVehicles() {};
-
-    virtual std::string what() const {
-        return "Request cant be successfully implemented: Quantity of goods is over the limits of the available vehicles";
-    }
-
-};
 
 bool myfunction(int i, int j) { return (i > j); }
 
