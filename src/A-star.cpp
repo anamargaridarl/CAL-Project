@@ -2,10 +2,6 @@
 #include <iostream>
 #include "Graph.h"
 
-double cartesianDistance (nodeInfo* point1, const nodeInfo* point2) {
-    return (sqrt(pow(point1->lon-point2->lon,2)+pow(point1->lat-point2->lat,2)));
-}
-
 void Graph::aStarShortestPath(const nodeInfo &origin, const nodeInfo &end) {
     for(auto v: vertexSet)
     {

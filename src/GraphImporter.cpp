@@ -78,12 +78,11 @@ void loadEdges(Graph &graph, ifstream &edgesFile, bool bi) {
 
             getline(edgesFile, line);
             sscanf(line.c_str(), "(%d, %d)", &originNodeID, &destNodeID);
-            nodeInfo origin;
-            origin.nodeID = originNodeID;
-            nodeInfo dest;
-            dest.nodeID = destNodeID;
-            graph.addEdge(origin, dest, 1);
-            graph.addEdge(dest, origin, 1);
+            nodeInfo origin = graph.findVertex(nodeInfo(originNodeID))->getInfo();
+            nodeInfo dest = graph.findVertex(nodeInfo(destNodeID))->getInfo();
+            double dist = 100*graph.cartesianDistance(&origin, &dest);
+            graph.addEdge(origin, dest, dist);
+            graph.addEdge(dest, origin, dist);
         }
     }
     else
@@ -93,11 +92,9 @@ void loadEdges(Graph &graph, ifstream &edgesFile, bool bi) {
 
             getline(edgesFile, line);
             sscanf(line.c_str(), "(%d, %d)", &originNodeID, &destNodeID);
-            nodeInfo origin;
-            origin.nodeID = originNodeID;
-            nodeInfo dest;
-            dest.nodeID = destNodeID;
-            graph.addEdge(origin, dest, 1);
+            nodeInfo origin = graph.findVertex(nodeInfo(originNodeID))->getInfo();
+            nodeInfo dest = graph.findVertex(nodeInfo(destNodeID))->getInfo();
+            graph.addEdge(origin, dest, 100*graph.cartesianDistance(&origin, &dest));
         }
     }
 }

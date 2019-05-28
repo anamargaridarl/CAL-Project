@@ -32,6 +32,7 @@ public:
 	int getNumVertex() const;
 	vector<Vertex *> getVertexSet() const;
 
+	static double cartesianDistance (nodeInfo* point1, const nodeInfo* point2);
 
 	void dijkstraShortestPath(const nodeInfo &s, const nodeInfo &e);
     void aStarShortestPath(const nodeInfo &s, const nodeInfo &e);

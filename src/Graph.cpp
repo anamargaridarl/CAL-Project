@@ -106,4 +106,8 @@ double Graph::getCost(const nodeInfo &dest) const{
     return destV->getDist();
 }
 
+double Graph::cartesianDistance (nodeInfo* point1, const nodeInfo* point2) {
+    return (sqrt(pow(point1->lon-point2->lon,2)+pow(point1->lat-point2->lat,2)));
+}
+
 

@@ -20,18 +20,6 @@ vector<Vehicle*> vehicles;
 Graph graph;
 vector<nodeInfo> currentPath;
 
-long int hashIdPair(long int id1, long int id2) {
-    return (long int)(0.5*(id1+id2)*(id1+id2+1)+id2);
-}
-
-pair<long int, long int> dehashIdPair(long int hash) {
-    double w = floor((sqrt(8 * hash + 1) - 1)/2);
-    double t = (w*w+w)/2;
-    long int y = (long int)(hash-t);
-    long int x = (long int)(w-y);
-    return make_pair(x,y);
-}
-
 void clearGraphViewer()
 {
     int i = 0;
@@ -470,12 +458,52 @@ void createJourneyMenu() {
 
 }
 
+void testAlgorithms() {
+    graph = importGraph("../GraphFiles/Porto/T08_nodes_X_Y_Porto.txt", "../GraphFiles/Porto/T08_edges_Porto.txt", "", true);
+    clock_t dfs_start = clock();
+
+    graph.dfs(graph.findVertex(nodeInfo(1108123561)));
+    clock_t dfs_finish = clock();
+    cout << "DFS: " << dfs_finish - dfs_start << "ms" << endl;
+
+    clock_t dijkstra1_start = clock();
+    graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(312404122));
+    clock_t dijkstra1_finish = clock();
+    cout << "Dijkstra (small distance): " << graph.findVertex(nodeInfo(312404122))->getDist() << " cost, " << dijkstra1_finish - dijkstra1_start << "ms" << endl;
+
+    clock_t astar1_start = clock();
+    graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(312404122));
+    clock_t astar1_finish = clock();
+    cout << "A-star (small distance): " << graph.findVertex(nodeInfo(312404122))->getDist() << " cost, " << astar1_finish - astar1_start << "ms" << endl;
+
+    clock_t dijkstra2_start = clock();
+    graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(495503510));
+    clock_t dijkstra2_finish = clock();
+    cout << "Dijkstra (medium distance): " << graph.findVertex(nodeInfo(495503510))->getDist() << " cost, " << dijkstra2_finish - dijkstra2_start << "ms" << endl;
+
+    clock_t astar2_start = clock();
+    graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(495503510));
+    clock_t astar2_finish = clock();
+    cout << "A-star (medium distance): " << graph.findVertex(nodeInfo(495503510))->getDist() << " cost, " << astar2_finish - astar2_start << "ms" << endl;
+
+    clock_t dijkstra3_start = clock();
+    graph.dijkstraShortestPath(nodeInfo(312403909), nodeInfo(299611722));
+    clock_t dijkstra3_finish = clock();
+    cout << "Dijkstra (medium distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << dijkstra3_finish - dijkstra3_start << "ms" << endl;
+
+    clock_t astar3_start = clock();
+    graph.aStarShortestPath(nodeInfo(312403909), nodeInfo(299611722));
+    clock_t astar3_finish = clock();
+    cout << "A-star (medium distance): " << graph.findVertex(nodeInfo(299611722))->getDist() << " cost, " << astar3_finish - astar3_start << "ms" << endl;
+}
+
 void mainMenu()
 {
     vector<Option*> options;
     options.push_back(new Option("Load Map", loadMapMenu));
     options.push_back(new Option("Vehicles", vehiclesMenu));
     options.push_back(new Option("Create Journey", createJourneyMenu));
+    options.push_back(new Option("Test Algorithms", testAlgorithms));
     Menu mainMenu("Main Menu", options);
 
     mainMenu.run();
